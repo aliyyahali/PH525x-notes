@@ -1,0 +1,23 @@
+
+ hello, creating and sending txt files to git PH525x-notes repository 
+
+> txtStop
+function() {
+  removeTaskCallback('r2txt')
+  if( R2txt.vars$closecon ) {
+    close( R2txt.vars$con )
+  }
+  if( R2txt.vars$cmdfile && R2txt.vars$closecon2 ) {
+    close( R2txt.vars$con2 )
+  }
+  options( prompt=R2txt.vars$prompt,
+           continue=R2txt.vars$continue )
+  if(R2txt.vars$res) {
+      sink()
+      close(R2txt.vars$outcon)
+  }
+  evalq( rm(list=ls()), envir=R2txt.vars )
+  invisible(NULL)
+}
+<bytecode: 0x7ff298df8110>
+<environment: namespace:TeachingDemos>
