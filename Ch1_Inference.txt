@@ -1,0 +1,165 @@
+> dat <- na.omit(read.csv("mice_pheno.csv"))
+> head(dat)
+  Sex Diet Bodyweight
+1   F   hf      31.94
+2   F   hf      32.48
+3   F   hf      22.82
+4   F   hf      19.92
+5   F   hf      32.22
+6   F   hf      27.50
+
+ ##If a list of numbers has a distribution that is well approximated by the normal distribution, what proportion of these numbers are within one standard deviation away from the list’s average? 
+
+
+ ## 68% 
+
+
+ ** What proportion of these numbers are within two standard deviations away from the list’s average? ** 
+
+
+ ## 95% 
+
+
+ **What proportion of these numbers are within three standard deviations away from the list’s average? ** 
+
+
+ ## 99.7% 
+
+
+ ** Define y to be the weights of males on the control diet. What proportion of the mice are within one standard deviation away from the average weight (remember to use popsd for the population sd) ** 
+
+> y <- filter(dat, Sex == "M" & Diet == "chow") %>% select(Bodyweight) %>% 
++ unlist()
+> head(y)
+Bodyweight1 Bodyweight2 Bodyweight3 Bodyweight4 Bodyweight5 Bodyweight6 
+      45.23       23.73       34.03       24.98       28.56       29.32 
+
+ ## use popsd() to calculate 1sd if we have the entire population (mice_pheno.csv is full dataset), otherwise use sd() if we have sample of a larger population 
+
+> library(rafalib)
+> popsd(y)
+[1] 4.420501
+
+ ## 1 sd = 4.420501 
+
+> mean(y)
+[1] 30.96381
+
+ ## average male control diet bodyweight = 30.96381 
+
+
+ ## filter the data values that are +- 4.420501 away from the mean. This selects mice bodyweight values that fall within this range. calculate what % of mice fall in this interval compared to the total with mean() 
+
+> m <- mean(y)
+> n <- popsd(y)
+> mean(dat >= m - n & dat <= m + n)
+[1] 0.1458581
+> mean(y >= m - n & dat <= m + n)
+[1] 0.2358304
+> mean(y >= m - n & y <= m + n)
+[1] 0.6950673
+
+ ## refer to filtered male, control diet mice variable *y*, not unfiltered dataset *dat* 
+
+
+ ##i.e. 69.5% of male, control diet mice bodyweight values fall within 1 sd range 
+
+
+ ** What proportion of these numbers are within two standard deviations away from the list’s average? ** 
+
+> n <- popsd(y) * 2
+
+ ## i.e. popsd() returns 1sd value, therefore *2 gives 2sd values 
+
+> `?`(popsd())
+> mean(y >= m - n & y <= m + n)
+[1] 0.9461883
+
+ ## 94.6% of male control diet bodyweight values fall within 2 sd from the mean 
+
+
+ **What proportion of these numbers are within three standard deviations away from the list’s average? ** 
+
+> n <- popsd(y) * 3
+> mean(y >= m - n & y <= m + n)
+[1] 0.9910314
+
+ ## 99/1% 
+
+
+ ** Note that the numbers for the normal distribution and our weights are relatively close. Also, notice that we are indirectly comparing quantiles of the normal distribution to quantiles of the mouse weight distribution. We can actually compare all quantiles using a qqplot. Which of the following best describes the qq-plot comparing mouse weights to the normal distribution? ** 
+
+
+ ##qqnorm to compare against normal distribution (CDF), qqplot to compare between 2 datasets (we only have 1 i.e. y 
+
+> `?`(qqnorm)
+> qqnorm(y)
+> qqline(y)
+> `?`(qwnorm)
+No documentation for ‘qwnorm’ in specified packages and libraries:
+you could try ‘??qwnorm’
+> `?`(qqnorm)
+
+ ##C) The mouse weights are well approximated by the normal distribution, although the larger values (right tail) are larger than predicted by the normal. This is consistent with the differences seen between question 3 and 6 
+
+
+ ## i.e. values on right tail are larger than expected (if assuming normal distribution). The sd calculations above show that y dataset is very close to a normal distribution, but with more sd away (2 and 3 sd), it is further from the expected/theoretical normal distribution. i.e. 3sd CDF = 99.7%, but y dataset is 99.1%, i.e. less than expected data falls within the 3sd range (bc of extreme values, hence the deviating values from the right tail) 
+
+
+ **Create the above qq-plot for the four populations: male/females on each of the two diets. What is the most likely explanation for the mouse weights being well approximated? What is the best explanation for all these being well approximated by the normal distribution? ** 
+
+> z <- filter(dat, Sex == "F" & Diet == "chow") %>% select(Bodyweight) %>% 
++ unlist()
+> head(z)
+Bodyweight1 Bodyweight2 Bodyweight3 Bodyweight4 Bodyweight5 Bodyweight6 
+      27.03       24.80       27.02       28.07       23.55       22.72 
+> qqline(z)
+> qqnorm(z)
+> qqline(z)
+
+ ## female control diet mice are also close to normal distibution. Some extreme values on the tails. Appears that right tail (larger values) are more extreme in female control diet compared to male control diet 
+
+> qqnorm(y)
+> qqline(y)
+> qqnorm(z)
+> qqline(y)
+> qqline(z)
+> yhf <- filter(dat, Sex == "M" & Diet == "hf") %>% select(Bodyweight)
+> yhf <- unlist(yhf)
+> head(yhf)
+Bodyweight1 Bodyweight2 Bodyweight3 Bodyweight4 Bodyweight5 Bodyweight6 
+      27.81       29.45       35.11       31.25       38.26       29.06 
+> qqnorm(yhf)
+> zhf <- filter(dat, Sex == "F" & Diet == "hf") %>% select(Bodyweight) %>% 
++ unlist()
+> head(zhf)
+Bodyweight1 Bodyweight2 Bodyweight3 Bodyweight4 Bodyweight5 Bodyweight6 
+      31.94       32.48       22.82       19.92       32.22       27.50 
+> qqnorm(zhf)
+> qqline(zhf)
+
+ ## ANS: A The CLT tells us that sample averages are approximately normal. 
+
+
+ ** Here we are going to use the function replicate to learn about the distribution of random variables. All the above exercises relate to the normal distribution as an approximation of the distribution of a fixed list of numbers or a population. We have not yet discussed probability in these exercises. If the distribution of a list of numbers is approximately normal, then if we pick a number at random from this distribution, it will follow a normal distribution. However, it is important to remember that stating that some quantity has a distribution does not necessarily imply this quantity is random. Also, keep in mind that this is not related to the central limit theorem. The central limit applies to averages of random variables. Let’s explore this concept. ** 
+
+> txtStop
+function() {
+  removeTaskCallback('r2txt')
+  if( R2txt.vars$closecon ) {
+    close( R2txt.vars$con )
+  }
+  if( R2txt.vars$cmdfile && R2txt.vars$closecon2 ) {
+    close( R2txt.vars$con2 )
+  }
+  options( prompt=R2txt.vars$prompt,
+           continue=R2txt.vars$continue )
+  if(R2txt.vars$res) {
+      sink()
+      close(R2txt.vars$outcon)
+  }
+  evalq( rm(list=ls()), envir=R2txt.vars )
+  invisible(NULL)
+}
+<bytecode: 0x7fb07502d3c0>
+<environment: namespace:TeachingDemos>
