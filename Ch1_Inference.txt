@@ -163,3 +163,250 @@ function() {
 }
 <bytecode: 0x7fb07502d3c0>
 <environment: namespace:TeachingDemos>
+txt> txtStart("Ch1_Inference.txt", append = TRUE)
+txt> `?`(sample)
+txt> `?`(sample)
+txt> `?`(replicate)
+txt> `?`(replicate)
+txt> set.seed(1)
+txt> set.seed(1)
+txt> avgs <- sample(y, 25) %>% mean() %>% replicate(1000)
+txt> avgs <- sample(y, 25) %>% mean() %>% replicate(1000)
+txt> head(avgs)
+[1] 1000 1000 1000 1000 1000 1000
+txt> head(avgs)
+txt> avgs <- replicate(1000, mean(sample(y, 25)))
+txt> avgs <- replicate(1000, mean(sample(y, 25)))
+txt> head(avgs)
+[1] 31.2988 31.1696 29.3772 31.9388 31.7060 29.7660
+txt> head(avgs)
+
+ ##`replicate() peforms the Monte Carlo simulation from earlier in the chapter. Take a sample of size 25 from male control diet mice (y), use mean() to get 1000 values of the average of each sample group, replicate 1000x to get 1000 averages 
+
+txt> txtComment("##`replicate() peforms the Monte Carlo simulation from earlier in the chapter. Take a sample of size 25 from male control diet mice (y), use mean() to get 1000 values of the average of each sample group, replicate 1000x to get 1000 averages")
+txt> avgs <- replicate(10000, mean(sample(y, 25)))
+txt> avgs <- replicate(10000, mean(sample(y, 25)))
+txt> hist(avgs)
+txt> hist(avgs)
+txt> qqnorm(avgs)
+txt> qqnorm(avgs)
+txt> qqline(avgs)
+txt> qqline(avgs)
+txt> `?`(sd)
+txt> `?`(sd)
+txt> sd(avgs)
+[1] 0.8268776
+txt> sd(avgs)
+txt> set.seed(1)
+txt> set.seed(1)
+txt> avgs <- replicate(10000, mean(sample(y, 25)))
+txt> avgs <- replicate(10000, mean(sample(y, 25)))
+txt> hist(avgs)
+txt> hist(avgs)
+txt> qqnorm(avgs)
+txt> qqnorm(avgs)
+txt> qqline(avgs)
+txt> qqline(avgs)
+txt> sd(avgs)
+[1] 0.8271233
+txt> sd(avgs)
+txt> mean(y)
+[1] 30.96381
+txt> mean(y)
+txt> mean(avgs)
+[1] 30.96856
+txt> mean(avgs)
+txt> `?`(sqrt)
+txt> `?`(sqrt)
+txt> `?`(popsd)
+txt> `?`(popsd)
+txt> popsd(avgs)
+[1] 0.827082
+txt> popsd(avgs)
+
+ **According to the CLT, the answer to exercise 9 should be the same as mean(y). You should be able to confirm that these two numbers are very close. Which of the following does the CLT tell us should be close to your answer to exercise 10? 
+
+txt> txtComment("**According to the CLT, the answer to exercise 9 should be the same as mean(y). You should be able to confirm that these two numbers are very close. Which of the following does the CLT tell us should be close to your answer to exercise 10?")
+
+ ## CLT central limit theorem calculates the standard deviation of a group of sample averages by taking the population sd (popsd()) and dividing it by the square root of n (sampel size) 
+
+txt> txtComment("## CLT central limit theorem calculates the standard deviation of a group of sample averages by taking the population sd (popsd()) and dividing it by the square root of n (sampel size)")
+
+ ## therfore ANS = D) popsd(y)/sqrt(25) 
+
+txt> txtComment("## therfore ANS = D) popsd(y)/sqrt(25)")
+
+ ** (popsd(y)) which is why we can’t use the CLT directly. This is because we see a sample and not the entire distribution. We also can’t use popsd(avgs) because to construct averages, we have to take 10,000 samples and this is never practical. We usually just get one sample. Instead we have to estimate popsd(y). As described, what we use is the sample standard deviation. Set the seed at 1, using the replicate function, create 10,000 samples of 25 and now, instead of the sample average, keep the standard deviation. Look at the distribution of the sample standard deviations. It is a random variable. The real population SD is about 4.5. What proportion of the sample SDs are below 3.5? ** 
+
+txt> txtComment("** (popsd(y)) which is why we can’t use the CLT directly. This is because we see a sample and not the entire distribution. We also can’t use popsd(avgs) because to construct averages, we have to take 10,000 samples and this is never practical. We usually just get one sample. Instead we have to estimate popsd(y). As described, what we use is the sample standard deviation. Set the seed at 1, using the replicate function, create 10,000 samples of 25 and now, instead of the sample average, keep the standard deviation. Look at the distribution of the sample standard deviations. It is a random variable. The real population SD is about 4.5. What proportion of the sample SDs are below 3.5? **")
+txt> set.seed(1)
+txt> set.seed(1)
+txt> sds <- replicate(10000, sd(sample(y, 25)))
+txt> sds <- replicate(10000, sd(sample(y, 25)))
+txt> head(sds)
+[1] 3.928546 5.454165 3.838789 3.838535 4.997106 4.898378
+txt> head(sds)
+
+ ## i.e. replacing mean() with sds() means for each value generated in the samples of group size 25, its standard deviation from the average/mean of dataset y is generated 
+
+txt> txtComment("## i.e. replacing mean() with sds() means for each value generated in the samples of group size 25, its standard deviation from the average/mean of dataset y is generated")
+
+ ## these are classed as random variables because the values generated are reliant on the random nature of sample generation. It wouldn't produce the same sets of sd values if we ran again w/ different seed 
+
+txt> txtComment("## these are classed as random variables because the values generated are reliant on the random nature of sample generation. It wouldn't produce the same sets of sd values if we ran again w/ different seed")
+txt> mean(sds <= 3.5)
+[1] 0.0942
+txt> mean(sds <= 3.5)
+
+ ## 9% of values in male control diet mice bodyweight values are 3.5 sd below the mean 
+
+txt> txtComment("## 9% of values in male control diet mice bodyweight values are 3.5 sd below the mean")
+
+ ## if the real population is ~4.5, it would make sense that few (9%) of data is not 4.5 sd (?) 
+
+txt> txtComment("## if the real population is ~4.5, it would make sense that few (9%) of data is not 4.5 sd (?)")
+txt> sds <- replicate(10000, popsd(sample(y, 25)))
+txt> sds <- replicate(10000, popsd(sample(y, 25)))
+txt> head(sds)
+[1] 4.016802 3.742225 4.033065 3.402931 4.143360 4.041522
+txt> head(sds)
+txt> mean(sds <= 3.5)
+[1] 0.1108
+txt> mean(sds <= 3.5)
+
+ ## actaully use popsd()? proportion is 11% 
+
+txt> txtComment("## actaully use popsd()? proportion is 11%")
+txt> `?`(qt)
+txt> `?`(qt)
+txt> `?`(seq)
+txt> `?`(seq)
+
+ **What the answer to question 12 reveals is that the denominator of the t-test is a random variable. By decreasing the sample size, you can see how this variability can increase. It therefore adds variability. The smaller the sample size, the more variability is added. The normal distribution stops providing a useful approximation. When the distribution of the population values is approximately normal, as it is for the weights, the t-distribution provides a better approximation. We will see this later on. Here we will look at the difference between the t-distribution and normal. Use the function qt and qnorm to get the quantiles of x=seq(0.0001,0.9999,len=300). Do this for degrees of freedom 3, 10, 30, and 100. Which of the following is true? ** 
+
+txt> txtComment("**What the answer to question 12 reveals is that the denominator of the t-test is a random variable. By decreasing the sample size, you can see how this variability can increase. It therefore adds variability. The smaller the sample size, the more variability is added. The normal distribution stops providing a useful approximation. When the distribution of the population values is approximately normal, as it is for the weights, the t-distribution provides a better approximation. We will see this later on. Here we will look at the difference between the t-distribution and normal. Use the function qt and qnorm to get the quantiles of x=seq(0.0001,0.9999,len=300). Do this for degrees of freedom 3, 10, 30, and 100. Which of the following is true? **")
+txt> x = seq(1e-04, 0.9999, len = 300)
+txt> x = seq(1e-04, 0.9999, len = 300)
+txt> head(x)
+[1] 0.000100000 0.003443813 0.006787625 0.010131438 0.013475251 0.016819064
+txt> head(x)
+
+ i.e. len=300 means 300 values, starting from 0.0001 up to 0.9999, in equal increments 
+
+txt> txtComment("i.e. len=300 means 300 values, starting from 0.0001 up to 0.9999, in equal increments")
+txt> dim(x)
+NULL
+txt> dim(x)
+txt> length(x)
+[1] 300
+txt> length(x)
+txt> `?`(qt)
+txt> `?`(qt)
+txt> qt(x, 3)
+  [1] -22.203742273  -6.664348674  -5.233577197  -4.518726011  -4.059172734  -3.727266670  -3.470704908
+  [8]  -3.263323229  -3.090301354  -2.942494303  -2.813893155  -2.700354695  -2.598910948  -2.507368823
+ [15]  -2.424065585  -2.347712970  -2.277294188  -2.211993758  -2.151148443  -2.094212135  -2.040730233
+ [22]  -1.990320584  -1.942659108  -1.897468777  -1.854511070  -1.813579263  -1.774493106  -1.737094556
+ [29]  -1.701244333  -1.666819106  -1.633709186  -1.601816617  -1.571053586  -1.541341090  -1.512607813
+ [36]  -1.484789176  -1.457826525  -1.431666443  -1.406260147  -1.381562978  -1.357533956  -1.334135392
+ [43]  -1.311332548  -1.289093341  -1.267388085  -1.246189257  -1.225471300  -1.205210434  -1.185384506
+ [50]  -1.165972841  -1.146956113  -1.128316238  -1.110036265  -1.092100286  -1.074493352  -1.057201399
+ [57]  -1.040211180  -1.023510203  -1.007086672  -0.990929443  -0.975027971  -0.959372268  -0.943952869
+ [64]  -0.928760792  -0.913787507  -0.899024906  -0.884465275  -0.870101269  -0.855925890  -0.841932461
+ [71]  -0.828114612  -0.814466257  -0.800981578  -0.787655010  -0.774481227  -0.761455125  -0.748571813
+ [78]  -0.735826597  -0.723214975  -0.710732619  -0.698375372  -0.686139236  -0.674020362  -0.662015047
+ [85]  -0.650119720  -0.638330940  -0.626645390  -0.615059865  -0.603571273  -0.592176626  -0.580873033
+ [92]  -0.569657702  -0.558527927  -0.547481089  -0.536514653  -0.525626159  -0.514813222  -0.504073527
+ [99]  -0.493404829  -0.482804945  -0.472271754  -0.461803194  -0.451397259  -0.441051995  -0.430765503
+[106]  -0.420535928  -0.410361464  -0.400240351  -0.390170868  -0.380151338  -0.370180121  -0.360255615
+[113]  -0.350376253  -0.340540502  -0.330746862  -0.320993864  -0.311280067  -0.301604060  -0.291964459
+[120]  -0.282359904  -0.272789060  -0.263250618  -0.253743289  -0.244265804  -0.234816916  -0.225395398
+[127]  -0.216000040  -0.206629649  -0.197283049  -0.187959079  -0.178656593  -0.169374460  -0.160111560
+[134]  -0.150866787  -0.141639045  -0.132427250  -0.123230327  -0.114047211  -0.104876846  -0.095718182
+[141]  -0.086570179  -0.077431801  -0.068302020  -0.059179812  -0.050064158  -0.040954043  -0.031848455
+[148]  -0.022746385  -0.013646827  -0.004548775   0.004548775   0.013646827   0.022746385   0.031848455
+[155]   0.040954043   0.050064158   0.059179812   0.068302020   0.077431801   0.086570179   0.095718182
+[162]   0.104876846   0.114047211   0.123230327   0.132427250   0.141639045   0.150866787   0.160111560
+[169]   0.169374460   0.178656593   0.187959079   0.197283049   0.206629649   0.216000040   0.225395398
+[176]   0.234816916   0.244265804   0.253743289   0.263250618   0.272789060   0.282359904   0.291964459
+[183]   0.301604060   0.311280067   0.320993864   0.330746862   0.340540502   0.350376253   0.360255615
+[190]   0.370180121   0.380151338   0.390170868   0.400240351   0.410361464   0.420535928   0.430765503
+[197]   0.441051995   0.451397259   0.461803194   0.472271754   0.482804945   0.493404829   0.504073527
+[204]   0.514813222   0.525626159   0.536514653   0.547481089   0.558527927   0.569657702   0.580873033
+[211]   0.592176626   0.603571273   0.615059865   0.626645390   0.638330940   0.650119720   0.662015047
+[218]   0.674020362   0.686139236   0.698375372   0.710732619   0.723214975   0.735826597   0.748571813
+[225]   0.761455125   0.774481227   0.787655010   0.800981578   0.814466257   0.828114612   0.841932461
+[232]   0.855925890   0.870101269   0.884465275   0.899024906   0.913787507   0.928760792   0.943952869
+[239]   0.959372268   0.975027971   0.990929443   1.007086672   1.023510203   1.040211180   1.057201399
+[246]   1.074493352   1.092100286   1.110036265   1.128316238   1.146956113   1.165972841   1.185384506
+[253]   1.205210434   1.225471300   1.246189257   1.267388085   1.289093341   1.311332548   1.334135392
+[260]   1.357533956   1.381562978   1.406260147   1.431666443   1.457826525   1.484789176   1.512607813
+[267]   1.541341090   1.571053586   1.601816617   1.633709186   1.666819106   1.701244333   1.737094556
+[274]   1.774493106   1.813579263   1.854511070   1.897468777   1.942659108   1.990320584   2.040730233
+[281]   2.094212135   2.151148443   2.211993758   2.277294188   2.347712970   2.424065585   2.507368823
+[288]   2.598910948   2.700354695   2.813893155   2.942494303   3.090301354   3.263323229   3.470704908
+[295]   3.727266670   4.059172734   4.518726011   5.233577197   6.664348674  22.203742273
+txt> qt(x, 3)
+txt> qqnorm(x)
+txt> qqnorm(x)
+txt> qt(x, 3) %>% qqnorm()
+txt> qt(x, 3) %>% qqnorm()
+txt> qt(x, 10) %>% qqnorm()
+txt> qt(x, 10) %>% qqnorm()
+txt> qt(x, 30) %>% qqnorm()
+txt> qt(x, 30) %>% qqnorm()
+txt> qt(x, 100) %>% qqnorm()
+txt> qt(x, 100) %>% qqnorm()
+
+ ## the above exercise using replicate (Monte Carlo) leads to random variables. this means that the sd varies i.e. not fixed. with larger sample sizes, sd varies less. however, sd struggles with smaller samples i.e. will show larger variances. t-distribution with qt() takes into account the larger variability that sd struggles with in smaller samples by   
+
+txt> txtComment("## the above exercise using replicate (Monte Carlo) leads to random variables. this means that the sd varies i.e. not fixed. with larger sample sizes, sd varies less. however, sd struggles with smaller samples i.e. will show larger variances. t-distribution with qt() takes into account the larger variability that sd struggles with in smaller samples by  ")
+
+ ## elongating the tail ends, i.e. increasing the spread of the data to compensate for the higher variance. 
+
+txt> txtComment("## elongating the tail ends, i.e. increasing the spread of the data to compensate for the higher variance.")
+
+ ## and 'elongating the tails' means its making the distribution wider than normal to account/compensate for the larger variance seen in smaller samples 
+
+txt> txtComment("## and 'elongating the tails' means its making the distribution wider than normal to account/compensate for the larger variance seen in smaller samples")
+
+ ## the larger the sample, the less 'elongated tails' there are with t-distribution, because a larger sample means its closer to the population actual value, hence there's not much variability to account/compensate for, hence the more-linear curve 
+
+txt> txtComment("## the larger the sample, the less 'elongated tails' there are with t-distribution, because a larger sample means its closer to the population actual value, hence there's not much variability to account/compensate for, hence the more-linear curve")
+
+ ## the df (degrees of freedom) reflect this, df = sample sizes, the smaller the sample, the more elongated the tails are, i.e. qt() makes the distribution larger than normal to compensate for the higher variance in smaller samples 
+
+txt> txtComment("## the df (degrees of freedom) reflect this, df = sample sizes, the smaller the sample, the more elongated the tails are, i.e. qt() makes the distribution larger than normal to compensate for the higher variance in smaller samples")
+txt> qt(x, 3) %>% qqnorm()
+txt> qt(x, 3) %>% qqnorm()
+txt> qt(x, 10) %>% qqnorm()
+txt> qt(x, 10) %>% qqnorm()
+txt> qt(x, 30) %>% qqnorm()
+txt> qt(x, 30) %>% qqnorm()
+txt> qt(x, 100) %>% qqnorm()
+txt> qt(x, 100) %>% qqnorm()
+
+ ## ANS: C) The t-distribution has larger tails up until 30 degrees of freedom, at which point it is practically the same as the normal distribution. 
+
+txt> txtComment("## ANS: C) The t-distribution has larger tails up until 30 degrees of freedom, at which point it is practically the same as the normal distribution.")
+txt> txtStop
+function() {
+  removeTaskCallback('r2txt')
+  if( R2txt.vars$closecon ) {
+    close( R2txt.vars$con )
+  }
+  if( R2txt.vars$cmdfile && R2txt.vars$closecon2 ) {
+    close( R2txt.vars$con2 )
+  }
+  options( prompt=R2txt.vars$prompt,
+           continue=R2txt.vars$continue )
+  if(R2txt.vars$res) {
+      sink()
+      close(R2txt.vars$outcon)
+  }
+  evalq( rm(list=ls()), envir=R2txt.vars )
+  invisible(NULL)
+}
+<bytecode: 0x7fb07502d3c0>
+<environment: namespace:TeachingDemos>
+txt> txtStop
