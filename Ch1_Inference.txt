@@ -2005,3 +2005,257 @@ function() {
 <bytecode: 0x7fac73c8f6d0>
 <environment: namespace:TeachingDemos>
 
+
+ ** Now we introduce the concept of a null hypothesis. We don’t know μx
+ nor μy
+. We want to quantify what the data say about the possibility that the diet has no effect: μx=μy
+. If we use CLT, then we approximate the distribution of X¯
+ as normal with mean μX
+ and standard deviation σX
+ and the distribution of Y¯
+ as normal with mean μy
+ and standard deviation σy
+. This implies that the difference Y¯−X¯
+ has mean 0
+. We described that the standard deviation of this statistic (the standard error) is SE(X¯−Y¯)=σ2y/12+σ2x/12‾‾‾‾‾‾‾‾‾‾‾‾‾√
+ and that we estimate the population standard deviations σx
+ and σy
+ with the sample estimates. What is the estimate of SE(X¯−Y¯)=σ2y/12+σ2x/12‾‾‾‾‾‾‾‾‾‾‾‾‾√
+ ? **  
+
+> `?`(`?`(see))
+> `?`(se)
+No documentation for ‘se’ in specified packages and libraries:
+you could try ‘??se’
+> `?`(`?`(se))
+
+ ## in a null hypothesis, we are proving that there is no difference between two groups. in this example, the null hypothesis is that the bodyweight between the two control and high-fructose diet mice groups have no difference. this means that the Xbar is equal to Ybar (x = control, y = hf). x/y bar is the sample of X and Y because we do not literally have the entire population, hence the sample 'bar'. in a null hypothesis, we assume that if Xbar and Ybar both follow a normal distribution (i.e. reflective of the real populations X and Y) with meanx and sdy (vice versa with y), that the difference between Xbar and Ybar means are 0 - ie no difference (null hypothesis) 
+
+> url <- "https://raw.githubusercontent.com/genomicsclass/dagdata/master/inst/extdata/femaleMiceWeights.csv"
+> filename <- "femaleMiceWeights.csv"
+> if (!file.exists("femaleMiceWeights.csv")) download(url, destfile = filename)
+> dat <- read.csv(filename)
+> head(dat)
+  Diet Bodyweight
+1 chow      21.51
+2 chow      28.14
+3 chow      24.04
+4 chow      23.45
+5 chow      23.68
+6 chow      19.79
+> dat
+   Diet Bodyweight
+1  chow      21.51
+2  chow      28.14
+3  chow      24.04
+4  chow      23.45
+5  chow      23.68
+6  chow      19.79
+7  chow      28.40
+8  chow      20.98
+9  chow      22.51
+10 chow      20.10
+11 chow      26.91
+12 chow      26.25
+13   hf      25.71
+14   hf      26.37
+15   hf      22.80
+16   hf      25.34
+17   hf      24.97
+18   hf      28.14
+19   hf      29.58
+20   hf      30.92
+21   hf      34.02
+22   hf      21.90
+23   hf      31.53
+24   hf      20.73
+> X <- filter(dat, Diet == "chow") %>% select(Bodyweight) %>% unlist()
+> head(X)
+Bodyweight1 Bodyweight2 Bodyweight3 Bodyweight4 Bodyweight5 Bodyweight6 
+      21.51       28.14       24.04       23.45       23.68       19.79 
+> Y <- filter(dat, Diet == "hf") %>% select(Bodyweight) %>% unlist()
+> head(Y)
+Bodyweight1 Bodyweight2 Bodyweight3 Bodyweight4 Bodyweight5 Bodyweight6 
+      25.71       26.37       22.80       25.34       24.97       28.14 
+
+ SE(X¯−Y¯)=σ2y/12+σ2x/12‾‾‾‾‾‾‾‾‾‾‾‾‾√ 
+
+
+ ## sigma = population variance = popsd() 
+
+
+ Standard error (SE) = sqrt(p(1-p)/n for binary data, but for quantitative data sd / sqrt(n) 
+
+
+ ## the question appears to be using the quantitative data formula of sd / sqrt(n),  
+
+
+ ## the above dat variable is a data sample of a larger population of mice, therefore we cannot use popsd(), and must use sd() to account for the larger variance in the data. 
+
+
+ ## recap, sigma = standard deviation, sigma squared = variance. the above formula in the q is using sigma squared i.e. variance. however, since the formula is all under a square root, this means that we will need the sd anyway. the n (12) is also already under a sqrt root. therefore, we could do sd / sqrt(12), or, sqrt(variance / n)(?) 
+
+> (sd(X)/sqrt(12)) + (sd(Y)/sqrt(12))
+[1] 2.055409
+
+ ## standard error of Xbar Ybar is equal to 2.06 
+
+
+ ## since X and Y are samples from datasets x and y respectively, X and Y are random variables and will differ every time. therefore, standard error is used to calculate the variability between different sample means (bar = mean). standard deviation describes the variability between each individual observations within the same sample (ie how much variance in the sample from the mean) 
+
+
+ ** So now we can compute Y¯−X¯
+ as well as an estimate of this standard error and construct a t-statistic. What is this t-statistic? ** 
+
+
+ ## t-statistic is a value that describes if the null is true - taking into account the observed difference between the two samples, divided by the standard error of the two samples. SE is calculated using the above formula, and got 2.06. if the null is true, then there shouldn't be any difference in means betwen the 2 samples anyway. finishing and using this formula: t-statistic = (Ybar - Xbar) / SE(Xbar - Ybar) 
+
+> mean(Y) - mean(X)
+[1] 3.020833
+> (mean(Y) - mean(X))/2.06
+[1] 1.466424
+
+ ## t-statistic. = 1.47 
+
+
+ ## the t-statistic takes the mean difference / standard error of the 2 samples to produce a *ratio* to describe how many SE the sample mean is from the actual population sd. because sd() is used in the standard error formula (?) 
+
+
+ ## i.e. t-statistic is used to compare means. 
+
+
+ ## techincally, the t-statistic numerator should be (Ybar - Xbar) - (μy−μx), where x and y are the entire population dataset, but we don't have the entire population, and we can assume that (μy−μx) = 0 because we are investigating that in the null hypothesis, that there is no difference between them. 
+
+
+ ** If we apply the CLT, what is the distribution of this t-statistic?
+A) Normal with mean 0 and standard deviation 1.
+B) t-distributed with 22 degrees of freedom.
+C) Normal with mean 0 and standard deviation σ2y/12+σ2x/12‾‾‾‾‾‾‾‾‾‾‾‾‾√
+.
+D) t-distributed with 12 degrees of freedom. ** 
+
+
+ to use CLT, we need to know the entire population data - but we don't know. we calculated SE to provide an *estimate* of what the true standard error is. this is because in our standard error estimate we used sd(), which adds variability to take into account that we do not have the entire population. 
+
+
+ ## ANS: D, degrees of freedom describes the variance (t-distribution). as we do not have the entire population dataset, we used sd().the formula for sd uses n-1 as the denominator, i.e. make a smaller denominator for a larger sd value (i.e. larger standard deviation aka larger variance). degrees of freedom is equal to n-1. therefore, as we are calculating the t-statistic using two samples (X and Y), the total sample size becomes (12-1 + 12-1) = 22 degrees of freedom 
+
+
+ ** Now we are ready to compute a p-value using the CLT. What is the probability of observing a quantity as large as what we computed in 10, when the null distribution is true? ** 
+
+
+ or is answer C?... 
+
+
+  standard error is calculated using formula: 'SE(X¯−Y¯)=σ2y/12+σ2x/12‾‾‾‾‾‾‾‾‾‾‾‾‾√
+ ?'. i instead simplified it by using values i already had, i.e. i did not have variance (sigma squared), but i did have standard deviation (sigma). therefore, i did sd / sqrt(n). 
+
+
+ ## instead of translating the formmula, i could do var() to calculate sigma squared, this should give the same value as before (2.06) 
+
+> (var(X)/sqrt(12)) + (var(Y)/sqrt(12))
+[1] 7.484227
+> sqrt(var(X)/(12)) + (var(Y)/(12))
+[1] 2.27173
+> var
+function (x, y = NULL, na.rm = FALSE, use) 
+{
+    if (missing(use)) 
+        use <- if (na.rm) 
+            "na.or.complete"
+        else "everything"
+    na.method <- pmatch(use, c("all.obs", "complete.obs", "pairwise.complete.obs", 
+        "everything", "na.or.complete"))
+    if (is.na(na.method)) 
+        stop("invalid 'use' argument")
+    if (is.data.frame(x)) 
+        x <- as.matrix(x)
+    else if (!is.null(x)) 
+        stopifnot(is.atomic(x))
+    if (is.data.frame(y)) 
+        y <- as.matrix(y)
+    else if (!is.null(y)) 
+        stopifnot(is.atomic(y))
+    .Call(C_cov, x, y, na.method, FALSE)
+}
+<bytecode: 0x7f928cef0e98>
+<environment: namespace:stats>
+> `?`(var)
+
+ slight difference why? maybe var() is more accurate, or my other above method was wrong 
+
+> obs <- abs(mean(X) - mean(Y))
+> obs
+[1] 3.020833
+> mean(X) - mean(Y)
+[1] -3.020833
+> se <- sqrt(var(X)/(12)) + (var(Y)/(12))
+> tstat <- obs/se
+> tstat
+[1] 1.32975
+
+ ## again, the t-statistic numerator should be sample mean differences (obs) - population mean difference. however, we do not have the entire population data. however, when investigating the null hypothesis, we can assume that pop mean difference = 0 
+
+
+ ## t-statistic (uses the CLT), the null distribution is approximated by normal distribution with means 0 and variance 1. this is because that if the null hypothesis true, the t-statistic behaves like a normal distribution (i.e. no difference between sample means), therefore mean difference between the two groups = 0 (mean=0), and therefore have the same standard deviation (relatively to each other) (sd = 1). since we only have 1 sample from each group, we cannot calculate standard error. however, we can use standard deviation as an estimate to what standard deviation could be. therefore, although CLT uses standard error, we can use sd value as an estimate of se in the equation. 
+
+> `?`(ppnorm)
+No documentation for ‘ppnorm’ in specified packages and libraries:
+you could try ‘??ppnorm’
+> `?`(pnorm)
+
+ ** the null distribution is approximated by normal distribution with means 0 and variance 1 ** 
+
+
+ ** Now we are ready to compute a p-value using the CLT. What is the probability of observing a quantity as large as what we computed in 10, when the null distribution is true? ** 
+
+
+ ## t-statistic is a value that explains the observed difference between the two sample populations, whilst factoring in the noise from the data via standard error. therefore, the lower the difference between the two sample populations, the more supportive it is of the null hypothesis (i.e. no difference), and therefore a lower tstat value. 
+
+
+ the t-statistic value of 1.33 represents the difference in bodyweight between the two populations of mice on different diets. as above, this tstat value also factors in the noise from the data via standard error. 
+
+
+ ## note 1.33 does *not* represent bodyweight directly, but rather a standardised unit to measure bodyweight difference, aka 1.33 standard errors 
+
+
+ ## pnorm() helps explain how likely it would be that we would get 1.33 bodyweight difference between the two diet populations if we took another sample. we currently only have 1 sample from each group available, so we use pnorm() to produce a p-value explaining the probability that < 1.33 
+
+> pnorm(tstat)
+[1] 0.9081997
+
+ ## as we are describing the null hypothesis, we do 1 - pnorm(tstat) to get what proportion of values would be above 1.33 
+
+> 1 - pnorm(tstat)
+[1] 0.0918003
+
+ ## the null hypothesis explains that there shouldn't be a difference in the mean between the two samples. we used the t-statistics formula to estimate the difference between the means of the two diet samples, factoring in the 'noise' via se. we got a value of 1.33. if there was truly no difference, the t-statistic would have  = 0. if we hypothetically sampled from the two different diet populations again, any t-statistic value < 1.33 would further support the null. however, we want to see the probability that the t-statistic value is *above* > 1.33 - this is because this leans more towards that there is actually a difference between the two different samples (i.e. to reject the null). we get all the values that are > 1.33 by simply doing 1 - pnorm(tstat). this gives a one-sided tailed tests i.e. we're only looking at the higher end of the tail (qnorm distribution plot). we *2 factor in the other tail to get the final p-value to reject the null.  
+
+> (1 - pnorm(tstat)) * 2
+[1] 0.1836006
+
+ ## 0.18 > 0.5, therefore we accept the null because the p-value is insigificant. the 0.18 explains that 18% of the time, i would see a difference between the two groups *by random chance*. this is too high of a likelihood to confirm for sure that there is actually a difference.   
+
+
+ ## however if it were < 0.05, this would be a suitable threshold to explain that there is small enough of a chance i.e.  less than 5% chance that the significant difference I am seeing when comparing the two samples is due to random chance, so it's more acceptable 
+
+> txtStop
+function() {
+  removeTaskCallback('r2txt')
+  if( R2txt.vars$closecon ) {
+    close( R2txt.vars$con )
+  }
+  if( R2txt.vars$cmdfile && R2txt.vars$closecon2 ) {
+    close( R2txt.vars$con2 )
+  }
+  options( prompt=R2txt.vars$prompt,
+           continue=R2txt.vars$continue )
+  if(R2txt.vars$res) {
+      sink()
+      close(R2txt.vars$outcon)
+  }
+  evalq( rm(list=ls()), envir=R2txt.vars )
+  invisible(NULL)
+}
+<bytecode: 0x7f92918a8f20>
+<environment: namespace:TeachingDemos>
