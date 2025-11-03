@@ -2259,3 +2259,99 @@ function() {
 }
 <bytecode: 0x7f92918a8f20>
 <environment: namespace:TeachingDemos>
+
+ **CLT provides an approximation for cases in which the sample size is large. In practice, we can’t check the assumption because we only get to see 1 outcome (which you computed above). As a result, if this approximation is off, so is our p-value. As described earlier, there is another approach that does not require a large sample size, but rather that the distribution of the population is approximately normal. We don’t get to see this distribution so it is again an assumption, although we can look at the distribution of the sample with qqnorm(X) and qqnorm(Y). If we are willing to assume this, then it follows that the t-statistic follows t-distribution. What is the p-value under the t-distribution approximation? Hint: use the t.test function. 
+
+
+ ## with CLT, the more samples taken / larger sample size, there more closer the data reaches a normal distribution. however, where large sample is not possible, we use t-test. but a t-test assumes a normal distribution of the data 
+
+> url <- "https://raw.githubusercontent.com/genomicsclass/dagdata/master/inst/extdata/femaleMiceWeights.csv"
+> filename <- "femaleMiceWeights.csv"
+> if (!file.exists("femaleMiceWeights.csv")) download(url, destfile = filename)
+> dat <- read.csv(filename)
+> `?`(t.test)
+> X <- filter(dat, Diet == "chow") %>% select(Bodyweight) %>% unlist()
+> head(X)
+Bodyweight1 Bodyweight2 Bodyweight3 Bodyweight4 Bodyweight5 Bodyweight6 
+      21.51       28.14       24.04       23.45       23.68       19.79 
+> Y <- filter(dat, Diet == "hf") %>% select(Bodyweight) %>% unlist()
+> t.test(X, Y)
+
+	Welch Two Sample t-test
+
+data:  X and Y
+t = -2.0552, df = 20.236, p-value = 0.053
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+ -6.08463229  0.04296563
+sample estimates:
+mean of x mean of y 
+ 23.81333  26.83417 
+
+> qqnorm(X)
+> qqline(X)
+> qqnorm(Y)
+> qqline(Y)
+> t.test(X)
+
+	One Sample t-test
+
+data:  X
+t = 27.292, df = 11, p-value = 1.863e-11
+alternative hypothesis: true mean is not equal to 0
+95 percent confidence interval:
+ 21.89290 25.73376
+sample estimates:
+mean of x 
+ 23.81333 
+
+> t.test(X, Y)
+
+	Welch Two Sample t-test
+
+data:  X and Y
+t = -2.0552, df = 20.236, p-value = 0.053
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+ -6.08463229  0.04296563
+sample estimates:
+mean of x mean of y 
+ 23.81333  26.83417 
+
+
+ ## accept null hypothesis: there is no significant difference between hf and control chow diet on mice bodyweight (p > 0.05) 
+
+
+ ** With the CLT distribution, we obtained a p-value smaller than 0.05 and with the t-distribution, one that is larger. They can’t both be right. What best describes the difference?
+A) A sample size of 12 is not large enough, so we have to use the t-distribution approximation.
+B) These are two different assumptions. The t-distribution accounts for the variability introduced by the estimation of the standard error and thus, under the null, large values are more probable under the null distribution.
+C) The population data is probably not normally distributed so the t-distribution approximation is wrong.
+D) Neither assumption is useful. Both are wrong. ** 
+
+
+ ## C? difference between CLT and t.test is that we can only assume that the data follows a normal distribution, so if it doesn't, this differs from the CLT p value? 
+
+> `?`(t.test)
+
+ ## ANS: B. t.test considers higher uncertainty in the formula, hence makes the tails of the normal distribution larger, hence 'large values are more probable'. therefore, due to the increased variability and larger tails, this distorts the p-value to be less specific, hence a larger p-value, which means harder to conclude a significant p-value, i.e. more likely for values to fall in the null. 
+
+> txtStop
+function() {
+  removeTaskCallback('r2txt')
+  if( R2txt.vars$closecon ) {
+    close( R2txt.vars$con )
+  }
+  if( R2txt.vars$cmdfile && R2txt.vars$closecon2 ) {
+    close( R2txt.vars$con2 )
+  }
+  options( prompt=R2txt.vars$prompt,
+           continue=R2txt.vars$continue )
+  if(R2txt.vars$res) {
+      sink()
+      close(R2txt.vars$outcon)
+  }
+  evalq( rm(list=ls()), envir=R2txt.vars )
+  invisible(NULL)
+}
+<bytecode: 0x7fdd6d11a628>
+<environment: namespace:TeachingDemos>
