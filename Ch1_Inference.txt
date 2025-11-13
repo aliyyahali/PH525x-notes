@@ -2355,3 +2355,483 @@ function() {
 }
 <bytecode: 0x7fdd6d11a628>
 <environment: namespace:TeachingDemos>
+> dat <- read.csv("femaleMiceWeights.csv")
+> head(dat)
+  Diet Bodyweight
+1 chow      21.51
+2 chow      28.14
+3 chow      24.04
+4 chow      23.45
+5 chow      23.68
+6 chow      19.79
+> "dat"
+[1] "dat"
+> dat
+   Diet Bodyweight
+1  chow      21.51
+2  chow      28.14
+3  chow      24.04
+4  chow      23.45
+5  chow      23.68
+6  chow      19.79
+7  chow      28.40
+8  chow      20.98
+9  chow      22.51
+10 chow      20.10
+11 chow      26.91
+12 chow      26.25
+13   hf      25.71
+14   hf      26.37
+15   hf      22.80
+16   hf      25.34
+17   hf      24.97
+18   hf      28.14
+19   hf      29.58
+20   hf      30.92
+21   hf      34.02
+22   hf      21.90
+23   hf      31.53
+24   hf      20.73
+> control <- filter(dat, Diet == "chow") %>% select(Bodyweight) %>% 
++ unlist()
+> treatment <- filter(dat, Diet == "hf") %>% select(Bodyweight) %>% 
++ unlist()
+> diff <- mean(treatment) - mean(control)
+> diff
+[1] 3.020833
+> abs(diff)
+[1] 3.020833
+
+ ## we don't have popsd, just a sample, so we use sd() to account for the extra variance 
+
+
+ ## SE = popsd / √n 
+
+
+ apply SE to diff - gives us the SE of variance between control vs treatment. otherwise SE on sample averages just gives variations of the sample control or treatment values itself 
+
+
+ ## SE = √ sigma^1 / n 
+
+
+ ## aka SE = variance / √n 
+
+> se <- sqrt(var(treatment)/length(treatment) + var(control)/length(control))
+> se
+[1] 1.469867
+
+ above is the standard error of variation between the two groups (control and treatment( 
+
+
+ ## dividing the difference in sample averages by the standard error gives the bodyweight value equivalent to one standard error 
+
+> tstat <- diff/se
+> tstat
+[1] 2.055174
+
+ ## the above tstatistic value is a random variable - the diff value varies depending on the sample taken of the two groups, and the se value varies as a result 
+
+
+ CLT would explain that with a larger sample size, the sample averages are normal, therefore the difference between these two samples are also normal, therefore CLT states that tstat sample average differences is normal with mean 0 and SE 1 
+
+
+ ## but with tstat, how often does this random variable exceed/deviate far from the diff? this gives p-value 
+
+> righttail <- 1 - pnorm(abs(tstat))
+> lefttail <- pnorm(-abs(tstat))
+> pval <- righttail + lefttail
+> pval
+[1] 0.0398622
+> t.test(treatment, control)
+
+	Welch Two Sample t-test
+
+data:  treatment and control
+t = 2.0552, df = 20.236, p-value = 0.053
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+ -0.04296563  6.08463229
+sample estimates:
+mean of x mean of y 
+ 26.83417  23.81333 
+
+
+ ## CLT behind tstat assumes normal distribution - but hard to assume normal if we have a very small sample size (12) for treatment and control 
+
+
+ use t.test which includes a 'degrees of freedom' parameter. they still assume normal distribution and apply CLT, but uses the extra dof parameter. and this gave a higher p-value to account for the higher uncertainty that comes with a smaller sample size  
+
+
+ ## this is because the denominator for tstat is the SE, which is a random variable (includes n in the formula, hence accounts for sample size)) 
+
+
+ ## note that t.test() is more likely to have false negatives as a result of increasing uncertainty, as seen with a higher p-value i.e. less likely to confirm a significant difference. vice versa with CLT - more likely to affirm a false positive 
+
+> dat <- read.csv("mice_pheno.csv")
+> head(dat)
+  Sex Diet Bodyweight
+1   F   hf      31.94
+2   F   hf      32.48
+3   F   hf      22.82
+4   F   hf      19.92
+5   F   hf      32.22
+6   F   hf      27.50
+> dat
+    Sex Diet Bodyweight
+1     F   hf     31.940
+2     F   hf     32.480
+3     F   hf     22.820
+4     F   hf     19.920
+5     F   hf     32.220
+6     F   hf     27.500
+7     F   hf     27.560
+8     F   hf     36.440
+9     F   hf     19.390
+10    F   hf     23.160
+11    F   hf     24.290
+12    F   hf     18.780
+13    F   hf     25.430
+14    F   hf     24.300
+15    F   hf     33.900
+16    F   hf     31.470
+17    F   hf     32.010
+18    F   hf     18.520
+19    F   hf     26.860
+20    F   hf     25.410
+21    F   hf     29.180
+22    F   hf     25.300
+23    F   hf     29.640
+24    F   hf     20.730
+25    F   hf     28.260
+26    F chow     27.030
+27    F chow     24.800
+28    F chow     27.020
+29    F chow     28.070
+30    F chow     23.550
+31    F chow     22.720
+32    F chow     24.820
+33    F chow     21.600
+34    F chow     23.980
+35    F chow     26.600
+36    F chow     19.240
+37    F chow     21.430
+38    F chow     22.730
+39    F chow     20.100
+40    F chow     20.600
+41    F chow     21.490
+42    F chow     24.730
+43    F chow     27.920
+44    F chow     27.510
+45    F chow     19.880
+46    F chow     20.720
+47    F chow     24.000
+48    F chow     25.080
+49    F chow     25.270
+50    F chow     22.080
+51    F chow     20.520
+52    F chow     23.390
+53    F chow     19.870
+54    F chow     17.950
+55    F chow     31.830
+56    F chow     21.710
+57    F chow     29.990
+58    F chow     20.890
+59    F chow     29.600
+60    F chow     22.770
+61    F chow     26.030
+62    F chow     36.840
+63    F chow     26.250
+64    F chow     22.930
+65    F chow     28.250
+66    F chow     23.840
+67    F chow     20.530
+68    F chow     24.100
+69    F chow     24.790
+70    F chow     23.680
+71    F chow     21.860
+72    F chow     27.250
+73    F chow     21.550
+74    F chow     24.120
+75    F chow     23.070
+76    F   hf     20.800
+77    F   hf     24.540
+78    F   hf     27.280
+79    F   hf     22.130
+80    F   hf     27.780
+81    F   hf     28.010
+82    F   hf     19.180
+83    F   hf     21.400
+84    F   hf     27.530
+85    F   hf     28.610
+86    F   hf     20.450
+87    F   hf     23.000
+88    F   hf     28.260
+89    F   hf     24.760
+90    F   hf     23.820
+91    F   hf     21.900
+92    F   hf     26.070
+93    F   hf     31.150
+94    F   hf     27.920
+95    F   hf     19.810
+96    F   hf     24.940
+97    F   hf     22.600
+98    F   hf     22.390
+99    F   hf     34.930
+100   F   hf     29.660
+101   F   hf     26.460
+102   F chow     20.430
+103   F chow     24.820
+104   F chow     25.430
+105   F chow     22.120
+106   F chow     20.990
+107   F chow     23.280
+108   F chow     25.780
+109   F chow     22.000
+110   F chow     20.740
+111   F chow     21.510
+112   F chow     26.850
+113   F chow     25.540
+114   F chow     22.510
+115   F chow     21.920
+116   F chow     21.320
+117   F chow     23.590
+118   F chow     26.140
+119   F chow     20.270
+120   F chow     29.600
+121   F chow     24.770
+122   F chow     22.360
+123   F chow     21.650
+124   F chow     22.080
+125   F chow     26.590
+126   F chow     24.600
+127   F   hf     21.880
+128   F   hf     26.500
+129   F   hf     24.550
+130   F   hf     16.560
+131   F   hf     29.180
+132   F   hf     26.070
+133   F   hf     17.540
+134   F   hf     26.180
+135   F   hf     25.260
+136   F   hf     27.500
+137   F   hf     23.140
+138   F   hf     31.410
+139   F   hf     25.140
+140   F   hf     22.120
+141   F   hf     17.010
+142   F   hf     22.800
+143   F   hf     25.370
+144   F   hf     28.610
+145   F   hf     22.130
+146   F   hf     21.660
+147   F   hf     24.900
+148   F   hf     33.130
+149   F   hf     29.580
+150   F   hf     23.050
+151   F chow     22.190
+152   F chow     29.190
+153   F chow     25.140
+154   F chow     23.190
+155   F chow     27.360
+156   F chow     23.530
+157   F chow     23.540
+158   F chow     18.410
+159   F chow     28.140
+160   F chow     23.340
+161   F chow     20.110
+162   F chow     18.080
+163   F chow     21.030
+164   F chow     24.230
+165   F chow     19.670
+166   F chow     22.660
+167   F chow     26.660
+168   F chow     20.690
+169   F chow     27.420
+170   F chow     21.910
+171   F chow     16.820
+172   F chow     24.470
+173   F chow     23.960
+174   F chow     23.180
+175   F chow     28.800
+176   F   hf     23.980
+177   F   hf     26.370
+178   F   hf     24.050
+179   F   hf     31.180
+180   F   hf     34.300
+181   F   hf     31.630
+182   F   hf     23.830
+183   F   hf     25.840
+184   F   hf     26.840
+185   F   hf     36.230
+186   F   hf     23.520
+187   F   hf     24.650
+188   F   hf     24.470
+189   F   hf     39.280
+190   F   hf     26.420
+191   F   hf     18.550
+192   F   hf     20.670
+193   F   hf     23.430
+194   F   hf     20.880
+195   F   hf     18.730
+196   F   hf     24.640
+197   F   hf     25.220
+198   F   hf     29.100
+199   F   hf     25.340
+200   F   hf     34.610
+201   F chow     26.370
+202   F chow     23.610
+203   F chow     26.070
+204   F chow     27.750
+205   F chow     23.700
+206   F chow     23.730
+207   F chow     24.490
+208   F chow     22.870
+209   F chow     29.230
+210   F chow     21.460
+211   F chow     22.120
+212   F chow     33.470
+213   F chow     24.960
+214   F chow     26.150
+215   F chow     24.890
+216   F chow     19.410
+217   F chow     26.360
+218   F chow     26.470
+219   F chow     23.190
+220   F chow     22.320
+221   F chow     20.030
+222   F chow     23.510
+223   F chow     21.350
+224   F chow     21.580
+225   F chow     22.270
+226   F   hf     21.790
+227   F   hf     18.789
+228   F   hf     20.290
+229   F   hf     26.440
+230   F   hf     25.880
+231   F   hf     23.480
+232   F   hf     22.980
+233   F   hf     24.040
+234   F   hf     32.960
+235   F   hf     23.090
+236   F   hf     24.290
+237   F   hf     28.720
+238   F   hf     29.930
+239   F   hf     26.500
+240   F   hf     23.260
+241   F   hf     19.210
+242   F   hf     21.150
+243   F   hf     20.230
+244   F   hf     18.240
+245   F   hf     15.970
+246   F   hf     30.810
+247   F   hf     25.380
+248   F   hf     30.340
+249   F   hf     31.530
+250   F   hf     22.190
+251   F chow     23.090
+252   F chow     23.880
+253   F chow     24.040
+254   F chow     27.150
+255   F chow     18.800
+256   F chow     28.070
+257   F chow     24.460
+258   F chow     25.420
+259   F chow     20.280
+260   F chow     24.060
+261   F chow     15.510
+262   F chow     22.510
+263   F chow     15.940
+264   F chow     19.900
+265   F chow     19.440
+266   F chow     22.180
+267   F chow     25.970
+268   F chow     25.960
+269   F chow     23.120
+270   F chow     20.980
+271   F chow     24.780
+272   F chow     22.560
+273   F chow     20.360
+274   F chow     16.050
+275   F chow     17.950
+276   F   hf     37.520
+277   F   hf     28.880
+278   F   hf     22.620
+279   F   hf     22.570
+280   F   hf     28.720
+281   F   hf     25.110
+282   F   hf     25.220
+283   F   hf     25.410
+284   F   hf     27.220
+285   F   hf     23.440
+286   F   hf     27.790
+287   F   hf     31.100
+288   F   hf     25.710
+289   F   hf     25.990
+290   F   hf     28.550
+291   F   hf     24.970
+292   F   hf     39.730
+293   F   hf     27.230
+294   F   hf     27.970
+295   F   hf     25.230
+296   F   hf     21.800
+297   F   hf     25.620
+298   F   hf     24.150
+299   F   hf     50.490
+300   F   hf     30.120
+301   F chow     22.710
+302   F chow     28.220
+303   F chow     21.500
+304   F chow     20.300
+305   F chow     19.960
+306   F chow     19.070
+307   F chow     22.350
+308   F chow     20.540
+309   F chow     30.450
+310   F chow     23.540
+311   F chow     20.610
+312   F chow     20.180
+313   F chow     20.590
+314   F chow     23.320
+315   F chow     26.350
+316   F chow     22.910
+317   F chow     25.100
+318   F chow     28.460
+319   F chow     21.310
+320   F chow     28.530
+321   F chow     28.430
+322   F chow     20.810
+323   F chow     27.000
+324   F chow     24.550
+325   F chow     21.180
+326   F chow     21.770
+327   F chow     23.800
+328   F chow     20.990
+329   F chow     23.110
+330   F chow     24.820
+331   F chow     22.590
+332   F chow     18.470
+333   F chow     21.100
+ [ reached 'max' / getOption("max.print") -- omitted 513 rows ]
+> control <- filter(dat, Diet == "chow") %>% select(Bodyweight) %>% 
++ unlist()
+> treatment <- filter(dat, Diet == "hf") %>% select(Bodyweight) %>% 
++ unlist()
+> t.test(control, treatment)
+
+	Welch Two Sample t-test
+
+data:  control and treatment
+t = -7.1932, df = 735.02, p-value = 1.563e-12
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+ -3.906857 -2.231533
+sample estimates:
+mean of x mean of y 
+ 27.41281  30.48201 
+
+
+ ## very small p value < 0.05, reject null, assumed normal distribution. despite t.test more likely to affirm false negative, the very small p value gives confidence due to large population / sample size 
+
+
+ ## CONFIDENCE INTERVALS - however, p-values may find a significant difference of e.g. 1 microgram difference in bodyweight between groups, but does this 1 microgram matter? is it 'scientifically' significant/relevant? use confidence intervals, don't always rely on p-value to affirm scientific investigation 
+
