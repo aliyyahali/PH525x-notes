@@ -2835,3 +2835,607 @@ mean of x mean of y
 
  ## CONFIDENCE INTERVALS - however, p-values may find a significant difference of e.g. 1 microgram difference in bodyweight between groups, but does this 1 microgram matter? is it 'scientifically' significant/relevant? use confidence intervals, don't always rely on p-value to affirm scientific investigation 
 
+> dat <- read.csv("mice_pheno.csv")
+> chowPopulation <- filter(dat, Sex == "F", Diet == "chow")
+> chowPopulation
+    Sex Diet Bodyweight
+1     F chow      27.03
+2     F chow      24.80
+3     F chow      27.02
+4     F chow      28.07
+5     F chow      23.55
+6     F chow      22.72
+7     F chow      24.82
+8     F chow      21.60
+9     F chow      23.98
+10    F chow      26.60
+11    F chow      19.24
+12    F chow      21.43
+13    F chow      22.73
+14    F chow      20.10
+15    F chow      20.60
+16    F chow      21.49
+17    F chow      24.73
+18    F chow      27.92
+19    F chow      27.51
+20    F chow      19.88
+21    F chow      20.72
+22    F chow      24.00
+23    F chow      25.08
+24    F chow      25.27
+25    F chow      22.08
+26    F chow      20.52
+27    F chow      23.39
+28    F chow      19.87
+29    F chow      17.95
+30    F chow      31.83
+31    F chow      21.71
+32    F chow      29.99
+33    F chow      20.89
+34    F chow      29.60
+35    F chow      22.77
+36    F chow      26.03
+37    F chow      36.84
+38    F chow      26.25
+39    F chow      22.93
+40    F chow      28.25
+41    F chow      23.84
+42    F chow      20.53
+43    F chow      24.10
+44    F chow      24.79
+45    F chow      23.68
+46    F chow      21.86
+47    F chow      27.25
+48    F chow      21.55
+49    F chow      24.12
+50    F chow      23.07
+51    F chow      20.43
+52    F chow      24.82
+53    F chow      25.43
+54    F chow      22.12
+55    F chow      20.99
+56    F chow      23.28
+57    F chow      25.78
+58    F chow      22.00
+59    F chow      20.74
+60    F chow      21.51
+61    F chow      26.85
+62    F chow      25.54
+63    F chow      22.51
+64    F chow      21.92
+65    F chow      21.32
+66    F chow      23.59
+67    F chow      26.14
+68    F chow      20.27
+69    F chow      29.60
+70    F chow      24.77
+71    F chow      22.36
+72    F chow      21.65
+73    F chow      22.08
+74    F chow      26.59
+75    F chow      24.60
+76    F chow      22.19
+77    F chow      29.19
+78    F chow      25.14
+79    F chow      23.19
+80    F chow      27.36
+81    F chow      23.53
+82    F chow      23.54
+83    F chow      18.41
+84    F chow      28.14
+85    F chow      23.34
+86    F chow      20.11
+87    F chow      18.08
+88    F chow      21.03
+89    F chow      24.23
+90    F chow      19.67
+91    F chow      22.66
+92    F chow      26.66
+93    F chow      20.69
+94    F chow      27.42
+95    F chow      21.91
+96    F chow      16.82
+97    F chow      24.47
+98    F chow      23.96
+99    F chow      23.18
+100   F chow      28.80
+101   F chow      26.37
+102   F chow      23.61
+103   F chow      26.07
+104   F chow      27.75
+105   F chow      23.70
+106   F chow      23.73
+107   F chow      24.49
+108   F chow      22.87
+109   F chow      29.23
+110   F chow      21.46
+111   F chow      22.12
+112   F chow      33.47
+113   F chow      24.96
+114   F chow      26.15
+115   F chow      24.89
+116   F chow      19.41
+117   F chow      26.36
+118   F chow      26.47
+119   F chow      23.19
+120   F chow      22.32
+121   F chow      20.03
+122   F chow      23.51
+123   F chow      21.35
+124   F chow      21.58
+125   F chow      22.27
+126   F chow      23.09
+127   F chow      23.88
+128   F chow      24.04
+129   F chow      27.15
+130   F chow      18.80
+131   F chow      28.07
+132   F chow      24.46
+133   F chow      25.42
+134   F chow      20.28
+135   F chow      24.06
+136   F chow      15.51
+137   F chow      22.51
+138   F chow      15.94
+139   F chow      19.90
+140   F chow      19.44
+141   F chow      22.18
+142   F chow      25.97
+143   F chow      25.96
+144   F chow      23.12
+145   F chow      20.98
+146   F chow      24.78
+147   F chow      22.56
+148   F chow      20.36
+149   F chow      16.05
+150   F chow      17.95
+151   F chow      22.71
+152   F chow      28.22
+153   F chow      21.50
+154   F chow      20.30
+155   F chow      19.96
+156   F chow      19.07
+157   F chow      22.35
+158   F chow      20.54
+159   F chow      30.45
+160   F chow      23.54
+161   F chow      20.61
+162   F chow      20.18
+163   F chow      20.59
+164   F chow      23.32
+165   F chow      26.35
+166   F chow      22.91
+167   F chow      25.10
+168   F chow      28.46
+169   F chow      21.31
+170   F chow      28.53
+171   F chow      28.43
+172   F chow      20.81
+173   F chow      27.00
+174   F chow      24.55
+175   F chow      21.18
+176   F chow      21.77
+177   F chow      23.80
+178   F chow      20.99
+179   F chow      23.11
+180   F chow      24.82
+181   F chow      22.59
+182   F chow      18.47
+183   F chow      21.10
+184   F chow      25.83
+185   F chow      16.31
+186   F chow      24.79
+187   F chow      26.08
+188   F chow      32.74
+189   F chow      27.26
+190   F chow      31.24
+191   F chow      33.81
+192   F chow      23.52
+193   F chow      27.73
+194   F chow      28.26
+195   F chow      23.30
+196   F chow      18.83
+197   F chow      27.70
+198   F chow      19.79
+199   F chow      27.20
+200   F chow      25.40
+201   F chow      26.75
+202   F chow      23.45
+203   F chow      24.77
+204   F chow      23.39
+205   F chow      22.95
+206   F chow      21.84
+207   F chow      28.40
+208   F chow      28.21
+209   F chow      33.36
+210   F chow      29.13
+211   F chow      24.21
+212   F chow      22.99
+213   F chow      24.68
+214   F chow      24.67
+215   F chow      25.12
+216   F chow      23.95
+217   F chow      25.69
+218   F chow      28.36
+219   F chow      24.96
+220   F chow      27.36
+221   F chow      26.91
+222   F chow      26.58
+223   F chow      23.39
+224   F chow      20.25
+225   F chow      23.22
+> mu_chow <- mean(chowPopulation)
+
+ ## filter dataframe column 3 (bodyweight values), instead of using dplyr to select %>% 
+
+> chowPopulation <- chowPopulation %>% select(Bodyweight)
+> chowPopulation
+    Bodyweight
+1        27.03
+2        24.80
+3        27.02
+4        28.07
+5        23.55
+6        22.72
+7        24.82
+8        21.60
+9        23.98
+10       26.60
+11       19.24
+12       21.43
+13       22.73
+14       20.10
+15       20.60
+16       21.49
+17       24.73
+18       27.92
+19       27.51
+20       19.88
+21       20.72
+22       24.00
+23       25.08
+24       25.27
+25       22.08
+26       20.52
+27       23.39
+28       19.87
+29       17.95
+30       31.83
+31       21.71
+32       29.99
+33       20.89
+34       29.60
+35       22.77
+36       26.03
+37       36.84
+38       26.25
+39       22.93
+40       28.25
+41       23.84
+42       20.53
+43       24.10
+44       24.79
+45       23.68
+46       21.86
+47       27.25
+48       21.55
+49       24.12
+50       23.07
+51       20.43
+52       24.82
+53       25.43
+54       22.12
+55       20.99
+56       23.28
+57       25.78
+58       22.00
+59       20.74
+60       21.51
+61       26.85
+62       25.54
+63       22.51
+64       21.92
+65       21.32
+66       23.59
+67       26.14
+68       20.27
+69       29.60
+70       24.77
+71       22.36
+72       21.65
+73       22.08
+74       26.59
+75       24.60
+76       22.19
+77       29.19
+78       25.14
+79       23.19
+80       27.36
+81       23.53
+82       23.54
+83       18.41
+84       28.14
+85       23.34
+86       20.11
+87       18.08
+88       21.03
+89       24.23
+90       19.67
+91       22.66
+92       26.66
+93       20.69
+94       27.42
+95       21.91
+96       16.82
+97       24.47
+98       23.96
+99       23.18
+100      28.80
+101      26.37
+102      23.61
+103      26.07
+104      27.75
+105      23.70
+106      23.73
+107      24.49
+108      22.87
+109      29.23
+110      21.46
+111      22.12
+112      33.47
+113      24.96
+114      26.15
+115      24.89
+116      19.41
+117      26.36
+118      26.47
+119      23.19
+120      22.32
+121      20.03
+122      23.51
+123      21.35
+124      21.58
+125      22.27
+126      23.09
+127      23.88
+128      24.04
+129      27.15
+130      18.80
+131      28.07
+132      24.46
+133      25.42
+134      20.28
+135      24.06
+136      15.51
+137      22.51
+138      15.94
+139      19.90
+140      19.44
+141      22.18
+142      25.97
+143      25.96
+144      23.12
+145      20.98
+146      24.78
+147      22.56
+148      20.36
+149      16.05
+150      17.95
+151      22.71
+152      28.22
+153      21.50
+154      20.30
+155      19.96
+156      19.07
+157      22.35
+158      20.54
+159      30.45
+160      23.54
+161      20.61
+162      20.18
+163      20.59
+164      23.32
+165      26.35
+166      22.91
+167      25.10
+168      28.46
+169      21.31
+170      28.53
+171      28.43
+172      20.81
+173      27.00
+174      24.55
+175      21.18
+176      21.77
+177      23.80
+178      20.99
+179      23.11
+180      24.82
+181      22.59
+182      18.47
+183      21.10
+184      25.83
+185      16.31
+186      24.79
+187      26.08
+188      32.74
+189      27.26
+190      31.24
+191      33.81
+192      23.52
+193      27.73
+194      28.26
+195      23.30
+196      18.83
+197      27.70
+198      19.79
+199      27.20
+200      25.40
+201      26.75
+202      23.45
+203      24.77
+204      23.39
+205      22.95
+206      21.84
+207      28.40
+208      28.21
+209      33.36
+210      29.13
+211      24.21
+212      22.99
+213      24.68
+214      24.67
+215      25.12
+216      23.95
+217      25.69
+218      28.36
+219      24.96
+220      27.36
+221      26.91
+222      26.58
+223      23.39
+224      20.25
+225      23.22
+> mu_chow <- chowPopulation
+> mu_chow <- mean(chowPopulation)
+> dat <- read.csv("mice_pheno.csv")
+> chowPopulation <- dat[dat$Sex == "F" & dat$Diet == "chow", 3]
+
+ dat$Sex highlights the subset of the dat dataset, select F, plus '&' condition to highlight the chow data 
+
+
+ column in the datafram 'chowPopulation' must be selected, i.e. the bodyweight (how to know what column represents what if i dont select a column?? 
+
+> chowPopulation <- dat[dat$Sex == "F" & dat$Diet == "chow", 2]
+> head(chowPopulation)
+[1] "chow" "chow" "chow" "chow" "chow" "chow"
+> chowPopulation <- dat[dat$Sex == "F" & dat$Diet == "chow", 1]
+> head(chowPopulation)
+[1] "F" "F" "F" "F" "F" "F"
+> chowPopulation <- dat[dat$Sex == "F" & dat$Diet == "chow", 4]
+> head(chowPopulation)
+NULL
+
+ 1 = sex, 2 = diet , 3 = bodyweight 
+
+> head(dat)
+  Sex Diet Bodyweight
+1   F   hf      31.94
+2   F   hf      32.48
+3   F   hf      22.82
+4   F   hf      19.92
+5   F   hf      32.22
+6   F   hf      27.50
+
+ look at original dat dataset to see the labelled columns 
+
+
+  3 = bodyweight 
+
+> head(chowPopulation)
+NULL
+
+  3 = bodyweight 
+
+> chowPopulation <- dat[dat$Sex == "F" & dat$Diet == "chow", 3]
+> head(chowPopulation)
+[1] 27.03 24.80 27.02 28.07 23.55 22.72
+> mu_chow <- mean(chowPopulation)
+> mu_chow
+[1] 23.89338
+
+ ## pretend that the chowPopulation is the entire dataset. take samples from the main population as you would in real life 
+
+> N <- 30
+> `?`(sample)
+> chow <- sample(chowPopulation, N)
+> head(chow)
+[1] 20.27 26.25 24.77 22.08 26.47 21.18
+> length(dat)
+[1] 3
+> length(chowPopulation)
+[1] 225
+
+ ## collected sample of 30 from chowPopulation of size 225 
+
+> mean(chow)
+[1] 24.22667
+
+ # above = random variable, sample pulls randomly hence gives random mean value from sample 
+
+> se <- sd(chow)/sqrt(N)
+
+ ## aka se = sqrt(variance(sigma squared) / N) 
+
+
+ ## sd (sigma) 
+
+> se
+[1] 0.7560065
+> pnorm(2) - pnorm(-2)
+[1] 0.9544997
+
+ ## i.e. takes the 0.05 p value (?) and says that anything falling within the 95% range of data follows a normal distribition 
+
+
+ ## calculate tstatistic with diff / se 
+
+> diff <- abs(mean(chow) - mean(chowPopulation))
+> diff
+[1] 0.3332889
+> diff/se
+[1] 0.4408545
+
+ ## 0.44 = t statistic for chow sample dataset. tstatistic takes into account sample size (via se formula) and variation from expected population and sample values (diff 
+
+
+ ## the tstatistic (diff / se) also standardises the data, to mean = 0, and sd of 1 (if you divide by se?) 
+
+
+ ## as above, the confidence interval describes that 95% of the time, the random variable (mean of random samples) will fall in the normal distribution parameters (?), i.e. 5% of the time will fall in the extremes (?) 
+
+
+ ## *correction: 95% of the time, the data will fall within 2 standard deviations of the data. therfore, 5% of the time, data will fall on the extreme values that are +2 sd away from the mean, and also -2 sd away. 
+
+
+ ## tstat = diff / se; tstat describes how many standard errors away the observed difference (diff) is from 0 se (aka no observed difference). we use standard errors because we are describing the observed differences between sample datasets (the sample and pop datasets(?)), not between individual data points in 1 dataset (i.e. used for sd) 
+
+
+ ## therefore, mean(chow) - mean(chowPopulation) describes the observed difference, divided by the above calculated se value (taking into account sample size), returns a tstatistic value. this tstat value has a 95% likelihood of falling between -2 sd and +2 sd, hence the interval: 
+
+
+ ## -2 < mean(chow) - mean(chowPopulation) / se < 2 
+
+> `?`(qnorm)
+> Q <- qnorm(1 - 0.05/2)
+
+ ## 1-0.05 defines the 95% interval, divide by 2 to define the two tails(?) 
+
+
+ ## i.e. dividing by 2 defines one end of the tail, i.e. one side of the interval 
+
+
+ ## i.e. the 5% defines both the right and left tails, so divide by 2 to get one tail aka one interval 
+
+
+ ## this defines Q as 'one tail', which explains how far away from the mean you should go before passing the 95% of data value threshold (on one end of the tail). it establishes the boundary interval 
+
+> interval <- c(mean(chow) - Q * se, mean(chow) + Q * se)
+> interval
+[1] 22.74492 25.70841
+
+ ## we know that Q defines the literal boundary / tail interval, but Q has no value. to obtain an actual value to define the interval range, multiply it by se (variance / sqrt(N)), which considers the sample(chow) sample size and sd(chow), which considers the bodyweight value (e.g. grams). this means Q*se makes the unitless Q value into actual bodyweight values. this defines the interval from 22.75g to 25.7g 
+
+
+ ## as above, we already collected the sample of size 30: chow. there is a 95% chance that the mean sample falls within the 95% confidence interval, i.e. within 2 sd away from the mean. we have yet to confirm this: 
+
+> interval[1]
+[1] 22.74492
+> interval[1] < mu_chow & interval[2] > mu_chow
+[1] TRUE
+
+ ## interval variable is a vector that contains two values: the left and right tails bodyweight values of 22.7 and 25.7 respectively. if the mu_chow (mean of sample chow) falls within the 95% confidence interval, it would be larger than interval[1] (left tail) & smaller than interval[2] (right tail) 
+
+
+ ## this returned TRUE 
+
