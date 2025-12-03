@@ -3439,3 +3439,116 @@ NULL
 
  ## this returned TRUE 
 
+> dat <- read.csv("mice_pheno.csv")
+> head(dat)
+  Sex Diet Bodyweight
+1   F   hf      31.94
+2   F   hf      32.48
+3   F   hf      22.82
+4   F   hf      19.92
+5   F   hf      32.22
+6   F   hf      27.50
+> chowPopulation <- dat[dat$Sex == "F" & dat$Diet == "chow", 3]
+
+ ## ^ select column 3 to filter bodyweight values, selecting dat filter Female + Chow diet 
+
+
+ ## demonstrate 5% extremes by sampling from the 'entire population' dataset chowPopulation. 5% of the time, the difference between the mean chowPopulation and the sample mean chowPopulation will be extreme, i.e. fall further than 2 sd away from the mean. 
+
+> `?`(mypar)
+> B <- 250
+> mypar()
+
+ ## (mypar() empty function to optimise graphs) 
+
+> `?`(plot)
+> plot(mean(chowPopulation) + c(-7, 7), c(1, 1), type = "n", xlab = "weight", 
++ ylab = "interval", ylim = c(1, B))
+
+ ## ^ generates graph: ylim 1,B i.e. 1, 250 y-axis to host all sample data tstat values. unsure what the c() vector do - centre the line in the middle? 
+
+> `?`(abline)
+
+ ## abline adds the central line through the graph 
+
+> abline(v = mean(chowPopulation))
+
+ ## v= is the x value for a vertical line; add mean chowPopulation value as an anchor / compparison against all other sample mean values; this highlights any deviations of the sample means vs the population mean 
+
+> plot(mean(chowPopulation) + c(-20, 20), c(1, 1), type = "n", 
++ xlab = "weight", ylab = "interval", ylim = c(1, B))
+> plot(mean(chowPopulation) + c(-1009, 1000), c(1, 1), type = "n", 
++ xlab = "weight", ylab = "interval", ylim = c(1, B))
+> `?`(plot)
+
+ type = n is a a type of plot that generates no plots. this code generates an empty graph to fill in later with no plots/points - the graph will host bars to represent deviations in sample mean (?) vs the population mean 
+
+> plot(mean(chowPopulation) + c(-7, 7), c(1, 1), type = "n", xlab = "weight", 
++ ylab = "interval", ylim = c(1, B))
+
+ ## plot the mean chowPopulation (x-axis), the c vectors describe +7 or -7 away from the mean (24); the x-axis shows range from 17 to 31 
+
+> plot(mean(chowPopulation) + c(-7, 7), c(100, 50), type = "n", 
++ xlab = "weight", ylab = "interval", ylim = c(1, B))
+> plot(mean(chowPopulation) + c(-7, 7), c(1, 1), type = "n", xlab = "weight", 
++ ylab = "interval", ylim = c(1, B))
+
+ ## unsure what second c(1,1) vector does 
+
+> abline(v = mean(chowPopulation))
+> for (i in 1:B) {
++ }
+> N <- 30
+> for (i in 1:B) {
++ chow <- sample(chowPopulation, N)
++ se <- sd(chow)/sqrt(N)
++ Q <- qnorm((1 - 0.05/2))
++ interval <- c(mean(chow) - Q * se, mean(chow) + Q * se)
++ covered <- mean(chowPopulation) <= interval[2] & mean(chowPopulation) >= 
++ 
++ interval[1]
++ colour <- ifelse(covered, 1, 2)
++ lines(interval, c(i, i), col = colour)
++ }
+
+ ## generated 250 samples via for loop. the following code was repeated 250 times: sample of 30 was generated, se calculated for that sample (for comparison between other samples), then multiplied against extreme tail probabilities (Q), which highlights the extreme bodyweight sample values from that sample. this generates bodyweight values(?) reflecting the extreme ranges in that sample.  
+
+
+ ## create  
+
+
+ ## use interval variable to create vector of left tail and right tail (range) of the sample via mean sample value and se 
+
+
+ ## graph reflects that there are few extreme sd deviations (expected 5%). these are samples with intervals that do not overlap data with the true chowPopulation mean. i.e. sample data has bodyweight values that are lower/larger than the true chowPopulation mean 
+
+
+ ## if repeated with sample size 5, CLT no longer applies (Q < - qqnorm(1 -0.05 / 2) --> more orange bars / extreme values from the samples generated  --> higher than 5% expected --> confidence intervals no longer applies as assume normal distribution based on CLT required 
+
+
+ ## instead of using qqnorm to generate Q tail value, use qt() for samples with small sample sizes 
+
+> `?`(qt)
+
+ ## this gives larger intervals (bc dividing by smaller sqrt(N) size in se calculation), therefore gives larger intervals in graph, but the number of red / extremes are now low around 5% again. 
+
+> txtStop
+function() {
+  removeTaskCallback('r2txt')
+  if( R2txt.vars$closecon ) {
+    close( R2txt.vars$con )
+  }
+  if( R2txt.vars$cmdfile && R2txt.vars$closecon2 ) {
+    close( R2txt.vars$con2 )
+  }
+  options( prompt=R2txt.vars$prompt,
+           continue=R2txt.vars$continue )
+  if(R2txt.vars$res) {
+      sink()
+      close(R2txt.vars$outcon)
+  }
+  evalq( rm(list=ls()), envir=R2txt.vars )
+  invisible(NULL)
+}
+<bytecode: 0x7f7e21866440>
+<environment: namespace:TeachingDemos>
