@@ -3552,3 +3552,522 @@ function() {
 }
 <bytecode: 0x7f7e21866440>
 <environment: namespace:TeachingDemos>
+txt> txtStart("Ch1_Inference.txt", append = TRUE)
+txt> controlPopulation <- filter(dat, Sex == "F" & Diet == "chow") %>% 
+txt+ select(Bodyweight) %>% unlist()
+txt> controlPopulation <- filter(dat, Sex == "F" & Diet == "chow") %>% 
+txt+ select(Bodyweight) %>% unlist()
+txt> hfPopulation <- filter(dat, Sex == "F" & Diet == "hf") %>% select(Bodyweight) %>% 
+txt+ unlist()
+txt> hfPopulation <- filter(dat, Sex == "F" & Diet == "hf") %>% select(Bodyweight) %>% 
+txt+ unlist()
+txt> mu_hf <- mean(hfPopulation)
+txt> mu_hf <- mean(hfPopulation)
+txt> mu_chow <- mean(controlPopulation)
+txt> mu_chow <- mean(controlPopulation)
+txt> mu_control <- mu_chow
+txt> mu_control <- mu_chow
+txt> pdiff <- (abs(mu_control - mu_hf)/mu_control) * 100
+txt> pdiff <- (abs(mu_control - mu_hf)/mu_control) * 100
+txt> pdiff
+[1] 9.942157
+txt> pdiff
+txt> set.seed(1)
+txt> set.seed(1)
+txt> hf <- sample(hfPopulation, 5) %>% t.test()
+txt> hf <- sample(hfPopulation, 5) %>% t.test()
+txt> hf
+
+	One Sample t-test
+
+data:  .
+t = 10.737, df = 4, p-value = 0.0004265
+alternative hypothesis: true mean is not equal to 0
+95 percent confidence interval:
+ 18.91343 32.10657
+sample estimates:
+mean of x 
+    25.51 
+
+txt> hf
+txt> hf$p.value
+[1] 0.0004264995
+txt> hf$p.value
+txt> hf <- sample(hfPopulation, 5)
+txt> hf <- sample(hfPopulation, 5)
+txt> t.test(hf)
+
+	One Sample t-test
+
+data:  hf
+t = 10.769, df = 4, p-value = 0.0004216
+alternative hypothesis: true mean is not equal to 0
+95 percent confidence interval:
+ 23.09523 39.14077
+sample estimates:
+mean of x 
+   31.118 
+
+txt> t.test(hf)
+
+ ## need two different values to compare in the t.test! 
+
+txt> txtComment("## need two different values to compare in the t.test!")
+txt> control <- sample(controlPopulation, 5) %>% t.test(hf)
+txt> control <- sample(controlPopulation, 5) %>% t.test(hf)
+txt> control
+
+	Welch Two Sample t-test
+
+data:  . and hf
+t = -2.4925, df = 5.731, p-value = 0.04886
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+ -15.90391556  -0.05608444
+sample estimates:
+mean of x mean of y 
+   23.138    31.118 
+
+txt> control
+txt> control <- sample(controlPopulation, 5)
+txt> control <- sample(controlPopulation, 5)
+txt> t.test(hf, control)
+
+	Welch Two Sample t-test
+
+data:  hf and control
+t = 1.1169, df = 7.8716, p-value = 0.297
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+ -4.60106 13.19706
+sample estimates:
+mean of x mean of y 
+   31.118    26.820 
+
+txt> t.test(hf, control)
+
+ ## p-value > 0.05  because small sample size of 5, i.e. less likely to accept a false positive, or incorrectly reject the null (false negative) 
+
+txt> txtComment("## p-value > 0.05  because small sample size of 5, i.e. less likely to accept a false positive, or incorrectly reject the null (false negative)")
+
+ ## therefore harder to confirm statistical significance in smaller sample sizes (t.test takes this into consideration 
+
+txt> txtComment("## therefore harder to confirm statistical significance in smaller sample sizes (t.test takes this into consideration")
+
+ ## type I error = false negative; type II = false positive 
+
+txt> txtComment("## type I error = false negative; type II = false positive")
+txt> `?`(pwr)
+No documentation for ‘pwr’ in specified packages and libraries:
+you could try ‘??pwr’
+txt> `?`(pwr)
+
+ ** simulations. The simulation is as follows: we take a sample of size N
+ from both control and treatment groups, we perform a t-test comparing these two, and report if the p-value is less than alpha or not. We write a function that does this: ** 
+
+txt> txtComment("** simulations. The simulation is as follows: we take a sample of size N\n from both control and treatment groups, we perform a t-test comparing these two, and report if the p-value is less than alpha or not. We write a function that does this: **")
+txt> N <- 12
+txt> N <- 12
+txt> B <- 2000
+txt> B <- 2000
+txt> for (i in 1:B) {
+txt+ control <- sample(controlPopulation, N)
+txt+ hf <- sample(hfPopulation, N)
+txt+ pval <- t.test(control, hf)$p.value
+txt+ pval < 0.05
+txt+ }
+txt> for (i in 1:B) {
+txt+ control <- sample(controlPopulation, N)
+txt+ hf <- sample(hfPopulation, N)
+txt+ pval <- t.test(control, hf)$p.value
+txt+ pval < 0.05
+txt+ }
+txt> reject <- for (i in 1:B) {
+txt+ control <- sample(controlPopulation, N)
+txt+ hf <- sample(hfPopulation, N)
+txt+ pval <- t.test(control, hf)$p.value
+txt+ pval < 0.05
+txt+ }
+txt> reject <- for (i in 1:B) {
+txt+ control <- sample(controlPopulation, N)
+txt+ hf <- sample(hfPopulation, N)
+txt+ pval <- t.test(control, hf)$p.value
+txt+ pval < 0.05
+txt+ }
+txt> head(reject)
+NULL
+txt> head(reject)
+txt> reject
+NULL
+txt> reject
+txt> reject <- function(N, alpha = 0.05) {
+txt+ hf <- sample(hfPopulation, N)
+txt+ control <- sample(controlPopulation, N)
+txt+ pval <- t.test(control, hf)$p.value
+txt+ pval < 0.05
+txt+ }
+txt> reject <- function(N, alpha = 0.05) {
+txt+ hf <- sample(hfPopulation, N)
+txt+ control <- sample(controlPopulation, N)
+txt+ pval <- t.test(control, hf)$p.value
+txt+ pval < 0.05
+txt+ }
+txt> head(reject)
+                                             
+1 function (N, alpha = 0.05)                 
+2 {                                          
+3     hf <- sample(hfPopulation, N)          
+4     control <- sample(controlPopulation, N)
+5     pval <- t.test(control, hf)$p.value    
+6     pval < 0.05                            
+txt> head(reject)
+txt> reject
+function(N, alpha = 0.05) {
+hf <- sample(hfPopulation, N)
+control <- sample(controlPopulation, N)
+pval <- t.test(control, hf)$p.value
+pval < 0.05
+}
+txt> reject
+txt> reject <- function(N, alpha = 0.05) {
+txt+ control <- sample(controlPopulation, N)
+txt+ hf <- sample(hfPopulation, N)
+txt+ pval <- t.test(hf, control)$p.value
+txt+ pval < alpha
+txt+ }
+txt> reject <- function(N, alpha = 0.05) {
+txt+ control <- sample(controlPopulation, N)
+txt+ hf <- sample(hfPopulation, N)
+txt+ pval <- t.test(hf, control)$p.value
+txt+ pval < alpha
+txt+ }
+txt> head(reject)
+                                             
+1 function (N, alpha = 0.05)                 
+2 {                                          
+3     control <- sample(controlPopulation, N)
+4     hf <- sample(hfPopulation, N)          
+5     pval <- t.test(hf, control)$p.value    
+6     pval < alpha                           
+txt> head(reject)
+txt> reject
+function(N, alpha = 0.05) {
+control <- sample(controlPopulation, N)
+hf <- sample(hfPopulation, N)
+pval <- t.test(hf, control)$p.value
+pval < alpha
+}
+txt> reject
+txt> reject(12)
+[1] FALSE
+txt> reject(12)
+
+ ## created a 'function' labelled as 'reject'. run the 'reject' variable with size N as 12 to get a t.test p value of sample sizes of 12 
+
+txt> txtComment("## created a 'function' labelled as 'reject'. run the 'reject' variable with size N as 12 to get a t.test p value of sample sizes of 12")
+
+ ## returned 'FALSE' i.e. the p-value was not < alpha, i.e. it was larger than 0.05, hence accept the null 
+
+txt> txtComment("## returned 'FALSE' i.e. the p-value was not < alpha, i.e. it was larger than 0.05, hence accept the null")
+
+ ## defined 'alpha' inside the function, so it is not in the main global environment as a separate variable 
+
+txt> txtComment("## defined 'alpha' inside the function, so it is not in the main global environment as a separate variable")
+
+ ## repeat the simulation B times 
+
+txt> txtComment("## repeat the simulation B times")
+txt> `?`(replicate)
+txt> `?`(replicate)
+txt> rejections <- replicate(B, reject(N))
+txt> rejections <- replicate(B, reject(N))
+
+ ## i.e. replicate 2000 times the function 'reject' (which already repeats the reject function in itself 12 times, outputting 12 FALSE/TRUE values per reject function simulation) 
+
+txt> txtComment("## i.e. replicate 2000 times the function 'reject' (which already repeats the reject function in itself 12 times, outputting 12 FALSE/TRUE values per reject function simulation)")
+txt> mean(rejections)
+[1] 0.2145
+txt> mean(rejections)
+
+ ## power = mean(rejections) 
+
+txt> txtComment("## power = mean(rejections)")
+
+ ## the higher the power, the less likely to get a type II error (reject null incorrectly, false positive) 
+
+txt> txtComment("## the higher the power, the less likely to get a type II error (reject null incorrectly, false positive)")
+
+ ## above simulation was run 2000 times and gave a mean of 21% power, i.e. too low. comfortable threshold at ~80%. this means that with a sample size of 12 in this simulation, the power was too low. this means rejecting the null incorrectly, i.e. false positives, was too likely. this means that the above 'FALSE' return is likely to also be an incorrect rejection of the null. not confident enough to accept the results from this simulation with this small sample size 
+
+txt> txtComment("## above simulation was run 2000 times and gave a mean of 21% power, i.e. too low. comfortable threshold at ~80%. this means that with a sample size of 12 in this simulation, the power was too low. this means rejecting the null incorrectly, i.e. false positives, was too likely. this means that the above 'FALSE' return is likely to also be an incorrect rejection of the null. not confident enough to accept the results from this simulation with this small sample size")
+
+ ## TLDR: low power means unlikely to change in beliefs (ie accept the null / can't rejct null vice versa 
+
+txt> txtComment("## TLDR: low power means unlikely to change in beliefs (ie accept the null / can't rejct null vice versa")
+
+ ## this means a lower power is less likely to reject the null, hence more likely to accept the null when the alternative hypothesis should have been accepted = type II error (false negatives) 
+
+txt> txtComment("## this means a lower power is less likely to reject the null, hence more likely to accept the null when the alternative hypothesis should have been accepted = type II error (false negatives)")
+
+ ## t tests take into account small sample sizes, raise the threshold for a succesful null rejection, i.e. less likely to get a significant p-value. therefore small sample sizes are less likely to get a significant p-value, meaning there are more rejections than with larger sample sizes as we are less confident that there is a significant difference. this also means false negatives are much more likey. 
+
+txt> txtComment("## t tests take into account small sample sizes, raise the threshold for a succesful null rejection, i.e. less likely to get a significant p-value. therefore small sample sizes are less likely to get a significant p-value, meaning there are more rejections than with larger sample sizes as we are less confident that there is a significant difference. this also means false negatives are much more likey.")
+txt> `?`(seq)
+txt> `?`(seq)
+txt> Ns <- seq(5, 50, 5)
+txt> Ns <- seq(5, 50, 5)
+txt> Ns
+ [1]  5 10 15 20 25 30 35 40 45 50
+txt> Ns
+
+ ## sequence of 5 to 50 in 5 increments 
+
+txt> txtComment("## sequence of 5 to 50 in 5 increments")
+txt> Ns <- seq(5, 50, 2)
+txt> Ns <- seq(5, 50, 2)
+txt> Ns
+ [1]  5  7  9 11 13 15 17 19 21 23 25 27 29 31 33 35 37 39 41 43 45 47 49
+txt> Ns
+txt> Ns <- seq(5, 50, 5)
+txt> Ns <- seq(5, 50, 5)
+txt> Ns
+ [1]  5 10 15 20 25 30 35 40 45 50
+txt> Ns
+txt> `?`(sapply)
+txt> `?`(sapply)
+txt> power <- sapply(Ns, function(N) {
+txt+ rejections <- replicate(B, reject(N))
+txt+ mean(rejections)
+txt+ })
+txt> power <- sapply(Ns, function(N) {
+txt+ rejections <- replicate(B, reject(N))
+txt+ mean(rejections)
+txt+ })
+txt> power
+ [1] 0.0930 0.1980 0.2865 0.3555 0.4620 0.5485 0.6430 0.6955 0.7745 0.8220
+txt> power
+
+ ## loop each number in the Ns sequence 5-50 (increments of 5), through new(?) function 'N'. open funcion(N) and replicate 2000 times an earlier function 'reject'. generate mean value of the 2000 simulations (TRUE/FALSE if pvalue < 0.05 (alpha); this gives the power. repeat the entire simulation again, for each vector in the sequence, until 50 
+
+txt> txtComment("## loop each number in the Ns sequence 5-50 (increments of 5), through new(?) function 'N'. open funcion(N) and replicate 2000 times an earlier function 'reject'. generate mean value of the 2000 simulations (TRUE/FALSE if pvalue < 0.05 (alpha); this gives the power. repeat the entire simulation again, for each vector in the sequence, until 50")
+txt> `?`(plot)
+txt> `?`(plot)
+txt> plot(Ns, power, type = "b")
+txt> plot(Ns, power, type = "b")
+
+ ## plot with x-axis defined as sequence 5-50 (Ns), y-axis as power (generated from mean number of significant p values, with type 'b' graph with plots and lines connected 
+
+txt> txtComment("## plot with x-axis defined as sequence 5-50 (Ns), y-axis as power (generated from mean number of significant p values, with type 'b' graph with plots and lines connected")
+
+ ## graph shows stable positive correlation with increases in sample size (Ns x-axis) 
+
+txt> txtComment("## graph shows stable positive correlation with increases in sample size (Ns x-axis)")
+
+ ## i.e. the larger the sample size, the larger the power, and therefore a larger power is less likely to lead to a false negative, and more likely to identify true positives (significant p values to reject the null) 
+
+txt> txtComment("## i.e. the larger the sample size, the larger the power, and therefore a larger power is less likely to lead to a false negative, and more likely to identify true positives (significant p values to reject the null)")
+
+ ## similarly, keeping the sample size the same but changing the p-value threshold (alpha) also changes power. the smaller the p value threshold, the higher the power. i.e. a higher power is less likely to give false negatives (reject the null when it should not 
+
+txt> txtComment("## similarly, keeping the sample size the same but changing the p-value threshold (alpha) also changes power. the smaller the p value threshold, the higher the power. i.e. a higher power is less likely to give false negatives (reject the null when it should not")
+txt> N <- 30
+txt> N <- 30
+txt> alphas <- c(0.1, 0.05, 0.01, 0.001, 1e-04)
+txt> alphas <- c(0.1, 0.05, 0.01, 0.001, 1e-04)
+txt> power <- sapply(alphas, function(alpha) {
+txt+ rejections <- replicate(B, reject(N, alpha = alpha))
+txt+ mean(rejections)
+txt+ })
+txt> power <- sapply(alphas, function(alpha) {
+txt+ rejections <- replicate(B, reject(N, alpha = alpha))
+txt+ mean(rejections)
+txt+ })
+txt> plot(alphas, power, xlab = "alpha", type = "b", log = "x")
+txt> plot(alphas, power, xlab = "alpha", type = "b", log = "x")
+
+ ## graph shows exponential increase in power with increasingly smaller p value threshold 
+
+txt> txtComment("## graph shows exponential increase in power with increasingly smaller p value threshold")
+
+ ## ** correction, graph shows exponential decrease in power with increasingly smaller alpha (p-value threshold) 
+
+txt> txtComment("## ** correction, graph shows exponential decrease in power with increasingly smaller alpha (p-value threshold)")
+
+ ## i.e. the stricter/smaller the p-value threshold (alpha), the less power there is, i.e. more likely to accept the null. this means less power means less likely to confirm statistical significance. this also means less power is more likely to lead to type I errors: false positives (??)  
+
+txt> txtComment("## i.e. the stricter/smaller the p-value threshold (alpha), the less power there is, i.e. more likely to accept the null. this means less power means less likely to confirm statistical significance. this also means less power is more likely to lead to type I errors: false positives (??) ")
+
+ ** Therefore, a better statistic to report is the effect size with a confidence interval or some statistic which gives the reader a sense of the change in a meaningful scale. We can report the effect size as a percent by dividing the difference and the confidence interval by the control population mean: 
+
+txt> txtComment("** Therefore, a better statistic to report is the effect size with a confidence interval or some statistic which gives the reader a sense of the change in a meaningful scale. We can report the effect size as a percent by dividing the difference and the confidence interval by the control population mean:")
+txt> t.test(hf, control)
+
+	Welch Two Sample t-test
+
+data:  hf and control
+t = 0.78168, df = 20.789, p-value = 0.4432
+alternative hypothesis: true difference in means is not equal to 0
+95 percent confidence interval:
+ -2.537324  5.590491
+sample estimates:
+mean of x mean of y 
+ 25.28825  23.76167 
+
+txt> t.test(hf, control)
+
+ ## extract confidence interval from the t.test and divide it by the control population sample mean, then *100 
+
+txt> txtComment("## extract confidence interval from the t.test and divide it by the control population sample mean, then *100")
+txt> t.test(hf, control)$conf.int/mean(control) * 100
+[1] -10.67823  23.52735
+attr(,"conf.level")
+[1] 0.95
+txt> t.test(hf, control)$conf.int/mean(control) * 100
+
+ ## a t statistic value is guaranteed to increase with sample size (bc sd naturally decreases and this sd is a denominator in the formula). therefore, calculating effect size is more reliable bc it does not depend on sample size - instead, it depends on sd. the effect size explains how many sd difference there is between two sample groups 
+
+txt> txtComment("## a t statistic value is guaranteed to increase with sample size (bc sd naturally decreases and this sd is a denominator in the formula). therefore, calculating effect size is more reliable bc it does not depend on sample size - instead, it depends on sd. the effect size explains how many sd difference there is between two sample groups")
+txt> url <- "https://raw.githubusercontent.com/genomicsclass/dagdata/master/inst/extdata/babies.txt"
+txt> url <- "https://raw.githubusercontent.com/genomicsclass/dagdata/master/inst/extdata/babies.txt"
+txt> `?`(basename)
+txt> `?`(basename)
+txt> filename <- basename(url)
+txt> filename <- basename(url)
+txt> download(url, destfile = filename)
+txt> download(url, destfile = filename)
+txt> babies <- read.table("babies.txt", header = TRUE)
+txt> babies <- read.table("babies.txt", header = TRUE)
+txt> head(babies)
+  bwt gestation parity age height weight smoke
+1 120       284      0  27     62    100     0
+2 113       282      0  33     64    135     0
+3 128       279      0  28     64    115     1
+4 123       999      0  36     69    190     0
+5 108       282      0  23     67    125     1
+6 136       286      0  25     62     93     0
+txt> head(babies)
+txt> tail(head)
+                    
+1 function (x, ...) 
+2 UseMethod("head") 
+txt> tail(head)
+txt> tail(babies)
+     bwt gestation parity age height weight smoke
+1231 132       270      0  27     65    126     0
+1232 113       275      1  27     60    100     0
+1233 128       265      0  24     67    120     0
+1234 130       291      0  30     65    150     1
+1235 125       281      1  21     65    110     0
+1236 117       297      0  38     65    129     0
+txt> tail(babies)
+txt> length(babies)
+[1] 7
+txt> length(babies)
+
+ ## babies.txt dataset is table with data on babies with smoking vs non-smoking mothers 
+
+txt> txtComment("## babies.txt dataset is table with data on babies with smoking vs non-smoking mothers")
+
+ ** First, let’s split this into two birth weight datasets: one of birth weights to non-smoking mothers and the other of birth weights to smoking mothers. ** 
+
+txt> txtComment("** First, let’s split this into two birth weight datasets: one of birth weights to non-smoking mothers and the other of birth weights to smoking mothers. **")
+txt> summary(babies)
+      bwt          gestation         parity            age            height          weight        smoke       
+ Min.   : 55.0   Min.   :148.0   Min.   :0.0000   Min.   :15.00   Min.   :53.00   Min.   : 87   Min.   :0.0000  
+ 1st Qu.:108.8   1st Qu.:272.0   1st Qu.:0.0000   1st Qu.:23.00   1st Qu.:62.00   1st Qu.:115   1st Qu.:0.0000  
+ Median :120.0   Median :280.0   Median :0.0000   Median :26.00   Median :64.00   Median :126   Median :0.0000  
+ Mean   :119.6   Mean   :286.9   Mean   :0.2549   Mean   :27.37   Mean   :64.67   Mean   :154   Mean   :0.4644  
+ 3rd Qu.:131.0   3rd Qu.:288.0   3rd Qu.:1.0000   3rd Qu.:31.00   3rd Qu.:66.00   3rd Qu.:140   3rd Qu.:1.0000  
+ Max.   :176.0   Max.   :999.0   Max.   :1.0000   Max.   :99.00   Max.   :99.00   Max.   :999   Max.   :9.0000  
+txt> summary(babies)
+txt> bwt.nonsmoke <- filter(babies, smoke == 0) %>% unlist()
+txt> bwt.nonsmoke <- filter(babies, smoke == 0) %>% unlist()
+txt> head(bwt.nonsmoke)
+bwt1 bwt2 bwt3 bwt4 bwt5 bwt6 
+ 120  113  123  136  138  132 
+txt> head(bwt.nonsmoke)
+txt> bwt.nonsmoke <- filter(babies, smoke == 0)
+txt> bwt.nonsmoke <- filter(babies, smoke == 0)
+txt> head(bwt.nonsmoke)
+  bwt gestation parity age height weight smoke
+1 120       284      0  27     62    100     0
+2 113       282      0  33     64    135     0
+3 123       999      0  36     69    190     0
+4 136       286      0  25     62     93     0
+5 138       244      0  33     62    178     0
+6 132       245      0  23     65    140     0
+txt> head(bwt.nonsmoke)
+txt> bwt.nonsmoke <- filter(babies, smoke == 0) %>% unlist()
+txt> bwt.nonsmoke <- filter(babies, smoke == 0) %>% unlist()
+txt> head(bwt.nonsmoke)
+bwt1 bwt2 bwt3 bwt4 bwt5 bwt6 
+ 120  113  123  136  138  132 
+txt> head(bwt.nonsmoke)
+txt> bwt.nonsmoke <- filter(babies, smoke == 0) %>% select(bwt) %>% 
+txt+ unlist()
+txt> bwt.nonsmoke <- filter(babies, smoke == 0) %>% select(bwt) %>% 
+txt+ unlist()
+txt> head(bwt.nonsmoke)
+bwt1 bwt2 bwt3 bwt4 bwt5 bwt6 
+ 120  113  123  136  138  132 
+txt> head(bwt.nonsmoke)
+txt> bwt.smoke <- filter(babies, smoke == 1) %>% select(bwt) %>% unlist()
+txt> bwt.smoke <- filter(babies, smoke == 1) %>% select(bwt) %>% unlist()
+txt> library(rafalib)
+txt> library(rafalib)
+txt> txtComment()
+
+ ## mean difference in body weight (bwt): 
+
+txt> txtComment("## mean difference in body weight (bwt):")
+txt> mean(bwt.smoke) - mean(bwt.nonsmoke)
+[1] -8.937666
+txt> mean(bwt.smoke) - mean(bwt.nonsmoke)
+txt> mean(bwt.smoke) - mean(bwt.nonsmoke) %>% abs()
+[1] -8.937666
+txt> mean(bwt.smoke) - mean(bwt.nonsmoke) %>% abs()
+txt> abs(mean(bwt.smoke) - mean(bwt.nonsmoke))
+[1] 8.937666
+txt> abs(mean(bwt.smoke) - mean(bwt.nonsmoke))
+txt> `?`(popsd)
+txt> `?`(popsd)
+txt> popsd(bwt.nonsmoke)
+[1] 17.38696
+txt> popsd(bwt.nonsmoke)
+txt> popsd(bwt.smoke)
+[1] 18.08024
+txt> popsd(bwt.smoke)
+txt> set.seed(1)
+txt> set.seed(1)
+txt> N <- 25
+txt> N <- 25
+txt> dat.ns <- sample(bwt.nonsmoke, N)
+txt> dat.ns <- sample(bwt.nonsmoke, N)
+txt> dat.s <- sample(bwt.smoke, N)
+txt> dat.s <- sample(bwt.smoke, N)
+txt> tval <- t.test(dat.ns, dat.s)$p.value
+txt> tval <- t.test(dat.ns, dat.s)$p.value
+txt> tval
+[1] 0.1036286
+txt> tval
+txt> txtStop
+function() {
+  removeTaskCallback('r2txt')
+  if( R2txt.vars$closecon ) {
+    close( R2txt.vars$con )
+  }
+  if( R2txt.vars$cmdfile && R2txt.vars$closecon2 ) {
+    close( R2txt.vars$con2 )
+  }
+  options( prompt=R2txt.vars$prompt,
+           continue=R2txt.vars$continue )
+  if(R2txt.vars$res) {
+      sink()
+      close(R2txt.vars$outcon)
+  }
+  evalq( rm(list=ls()), envir=R2txt.vars )
+  invisible(NULL)
+}
+<bytecode: 0x7f7e21866440>
+<environment: namespace:TeachingDemos>
+txt> txtStop
