@@ -1,5 +1,5 @@
 # PH525x-notes
-This repository contains my .txt R console transcripts to record my progress through the PH525x genomics class (Rafael Irizarry, Harvard) code worksheets.
+This repository contains .txt R console transcripts to record my progress through the PH525x genomics class (Rafael Irizarry, Harvard) code worksheets.
 
 Status: Chapter 1 (Inference)
 Key learning progress:
