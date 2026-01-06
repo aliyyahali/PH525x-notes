@@ -4,5 +4,5 @@ This repository contains .txt R console transcripts to record my progress throug
 Status: Chapter 1 (Inference)
 Key learning progress:
 - understanding the theory behind statistics: visualising the effects of CLT
-- running Monte Carlo Simulations
-- defining and generating confidence interval plots
+- ran Monte Carlo Simulations
+- defined and generated confidence interval plots
