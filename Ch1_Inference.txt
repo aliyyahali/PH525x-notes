@@ -7479,3 +7479,368 @@ NULL
 [1] 0.9257
 > mean(pval < alpha)
 [1] 0.9257
+> getwd()
+[1] "/Users/aliyyahali/Desktop/R/git/PH525x-notes"
+> dat <- read.csv("mice_pheno.csv")
+> head(dat)
+  Sex Diet Bodyweight
+1   F   hf      31.94
+2   F   hf      32.48
+3   F   hf      22.82
+4   F   hf      19.92
+5   F   hf      32.22
+6   F   hf      27.50
+> dat <- read.csv("mice_pheno.csv")
+> controlPopulation <- filter(dat, Sex == "F", Diet == "chow") %>% 
++ select(Bodyweight) %>% unlist()
+> ttestgenerator <- function(n) {
++ cases <- sample(controlPopulation, n)
++ controls <- sample(controlPopulation, n)
++ tstat <- mean(cases) - mean(controls)/sqrt(var(cases)/n + 
++ 
++ var(controls)/n)
++ }
+> ttests <- replicate(1000, ttestgenerator(10))
+> hist(ttests)
+> qnorm(ttests)
+   [1]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+  [13]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+  [25]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+  [37]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+  [49]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+  [61]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+  [73]         NaN         NaN         NaN         NaN         NaN  0.74782709         NaN         NaN         NaN         NaN         NaN -1.48559206
+  [85]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+  [97]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+ [109]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+ [121]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN -1.64520062         NaN         NaN         NaN
+ [133]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+ [145]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+ [157]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN -2.28678327
+ [169]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+ [181]         NaN         NaN         NaN  1.64361325         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+ [193]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+ [205]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+ [217]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+ [229]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+ [241]         NaN         NaN -0.69843183         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+ [253]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+ [265]         NaN         NaN  1.42115506         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+ [277]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+ [289]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+ [301]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+ [313]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+ [325]         NaN         NaN         NaN         NaN         NaN         NaN  2.22947469         NaN         NaN         NaN         NaN         NaN
+ [337]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN  0.45572879         NaN         NaN         NaN
+ [349]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+ [361]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+ [373]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+ [385]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+ [397]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+ [409]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+ [421]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+ [433]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+ [445]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+ [457]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+ [469]         NaN         NaN  1.53434862         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+ [481]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+ [493]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+ [505]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+ [517]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+ [529]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+ [541]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+ [553]         NaN         NaN         NaN         NaN         NaN         NaN -1.24626337         NaN         NaN         NaN         NaN         NaN
+ [565]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+ [577]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN  0.07620729         NaN         NaN         NaN
+ [589]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+ [601]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+ [613]         NaN         NaN         NaN  0.40465370         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+ [625]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+ [637]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+ [649]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+ [661]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN  0.49857215
+ [673]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+ [685]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+ [697]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+ [709]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+ [721]         NaN         NaN         NaN         NaN -1.07677551         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+ [733]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+ [745]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN  0.12160019         NaN         NaN
+ [757]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+ [769]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+ [781]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+ [793]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+ [805]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+ [817]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+ [829]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+ [841]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+ [853]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+ [865]         NaN         NaN         NaN         NaN         NaN         NaN         NaN -2.03880015         NaN         NaN         NaN         NaN
+ [877]         NaN         NaN         NaN         NaN         NaN  0.46512413         NaN         NaN         NaN         NaN         NaN         NaN
+ [889]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+ [901]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+ [913]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+ [925]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+ [937]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+ [949]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+ [961]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+ [973]         NaN         NaN         NaN  0.15578956         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+ [985]         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN         NaN
+ [997]         NaN         NaN         NaN         NaN
+> qqnorm(ttests)
+> `?`(abline)
+> qqnorm(ttests)
+> abline(0, 1)
+> qqline(ttests)
+> qqline(ttests)
+> `?`(qqline)
+> abline(0, 1)
+> ttests <- replicate(1000, ttestgenerator(3))
+> qqnorm(ttests)
+> abline(0, 1)
+> qqline(ttests)
+> `?`(qt)
+> ps <- (seq(0, 999) + 0.5)/1000
+> qqplot(qt(ps, df = 2 * 3 - 2), ttests, xlim = c(-6, 6), ylim = c(-6, 
++ 6))
+> abline(0, 1)
+> qqnorm(controlPopulation)
+> qqline(controlPopulation)
+> ttestgenerator <- function(n) {
++ cases <- sample(controlPopulation, n)
++ controls <- sample(controlPopulation, n)
++ tstat <- mean(cases) - mean(controls)/sqrt(var(cases)/n + 
++ 
++ var(controls)/n)
++ return(tstat)
++ }
+> ttests <- replicate(1000, ttestgenerator(10))
+> hist(ttests)
+> qqnorm(ttests)
+> qqline(ttests)
+> abline(0, 1)
+> ttests <- replicate(1000, ttestgenerator(3))
+> qqnorm(ttests)
+> abline(0, 1)
+> ps <- (seq(0, 999) + 0.5)/1000
+> abline(0, 1)
+> ttests <- replicate(1000, ttestgenerator(3))
+> qqnorm(ttests)
+> qqline(ttests)
+> abline(0, 1)
+> ps <- (seq(0, 999) + 0.5)/1000
+> qqplot(qt(ps, df = 2 * 3 - 2), ttests, xlim = c(-6, 6), ylim = c(-6, 
++ 6))
+> abline(0, 1)
+> qqnorm(controlPopulation)
+> qqline(controlPopulation)
+> controls <- rnorm(5000, mean = 24, sd = 3.5)
+> controls <- rnorm(5000, mean = 24, sd = 3.5)
+> controls <- rnorm(5000, mean = 24, sd = 3.5)
+> controls <- rnorm(5000, mean = 24, sd = 3.5)
+> ttestgenerator <- function(n, mean = 24, sd = 3.5) {
++ cases <- rnorm(n, mean, sd)
++ controls <- rnorm(n, mean, sd)
++ tstat <- (mean(cases) - mean(controls))/sqrt(var(cases)/n + 
++ 
++ var(controls)/n)
++ return(tstat)
++ }
+> ttests <- replicate(1000, ttestgenerator(3))
+> qqnorm(ttests)
+> `?`(rnorm)
+> set.seed(1)
+> sample <- rnorm(5)
+> t <- sqrt(5) * mean(sample)/sd(sample)
+> t
+[1] 0.3007746
+> set.seed(1)
+> B = 1000
+> monte <- replicate(B, t)
+> head(monte)
+[1] 0.3007746 0.3007746 0.3007746 0.3007746 0.3007746 0.3007746
+> set.seed(1)
+> B = 1000
+> monte <- function(n) {
++ sample <- rnorm(n)
++ t <- sqrt(n) * mean(sample)/sd(sample)
++ return(t)
++ }
+> carlo <- replicate(B, monte)
+> head(carlo)
+[[1]]
+function(n) {
+  sample <- rnorm(n)
+  t <- sqrt(n) * mean(sample) / sd(sample)
+  return(t)
+}
+
+[[2]]
+function(n) {
+  sample <- rnorm(n)
+  t <- sqrt(n) * mean(sample) / sd(sample)
+  return(t)
+}
+
+[[3]]
+function(n) {
+  sample <- rnorm(n)
+  t <- sqrt(n) * mean(sample) / sd(sample)
+  return(t)
+}
+
+[[4]]
+function(n) {
+  sample <- rnorm(n)
+  t <- sqrt(n) * mean(sample) / sd(sample)
+  return(t)
+}
+
+[[5]]
+function(n) {
+  sample <- rnorm(n)
+  t <- sqrt(n) * mean(sample) / sd(sample)
+  return(t)
+}
+
+[[6]]
+function(n) {
+  sample <- rnorm(n)
+  t <- sqrt(n) * mean(sample) / sd(sample)
+  return(t)
+}
+
+> carlo <- replicate(B, monte(5))
+> head(carlo)
+[1]  0.30077462  0.45178990  0.05687305  2.21080865  0.15122603 -1.10608994
+> carlo <- replicate(B, monte(5))
+> mean(carlo > 2)
+[1] 0.043
+> mean(carlo > 2)
+[1] 0.043
+> `?`(pt)
+> C <- 100
+> ps = seq(1/(C + 1), 1 - 1/(C + 1), len = C)
+> qt(ps, df = 4)
+  [1] -3.75841964 -3.00862446 -2.61022499 -2.34196515 -2.14070027 -1.97992435
+  [7] -1.84610454 -1.73143838 -1.63103505 -1.54163503 -1.46096155 -1.38736398
+ [13] -1.31960888 -1.25675120 -1.19805129 -1.14291974 -1.09087939 -1.04153863
+ [19] -0.99457211 -0.94970659 -0.90671033 -0.86538506 -0.82555975 -0.78708579
+ [25] -0.74983314 -0.71368729 -0.67854682 -0.64432134 -0.61092993 -0.57829971
+ [31] -0.54636477 -0.51506519 -0.48434624 -0.45415773 -0.42445340 -0.39519046
+ [37] -0.36632910 -0.33783219 -0.30966489 -0.28179440 -0.25418966 -0.22682119
+ [43] -0.19966084 -0.17268158 -0.14585740 -0.11916309 -0.09257415 -0.06606661
+ [49] -0.03961691 -0.01320180  0.01320180  0.03961691  0.06606661  0.09257415
+ [55]  0.11916309  0.14585740  0.17268158  0.19966084  0.22682119  0.25418966
+ [61]  0.28179440  0.30966489  0.33783219  0.36632910  0.39519046  0.42445340
+ [67]  0.45415773  0.48434624  0.51506519  0.54636477  0.57829971  0.61092993
+ [73]  0.64432134  0.67854682  0.71368729  0.74983314  0.78708579  0.82555975
+ [79]  0.86538506  0.90671033  0.94970659  0.99457211  1.04153863  1.09087939
+ [85]  1.14291974  1.19805129  1.25675120  1.31960888  1.38736398  1.46096155
+ [91]  1.54163503  1.63103505  1.73143838  1.84610454  1.97992435  2.14070027
+ [97]  2.34196515  2.61022499  3.00862446  3.75841964
+> C <- 100
+> ps = seq(1/(C + 1), 1 - 1/(C + 1), len = C)
+> theory <- qt(ps, df = 4)
+> qqnorm(carlo, theory, xlim = c(-6, 6), ylim = c(-6, 6))
+> qqplot(carlo, theory, xlim = c(-6, 6), ylim = c(-6, 6))
+> qqnorm(theory)
+> qqnorm(theory)
+> qqplot(carlo, theory, xlim = c(-6, 6), ylim = c(-6, 6))
+> qqnorm(theory)
+> qqplot(carlo, theory, xlim = c(-6, 6), ylim = c(-6, 6))
+> qqnorm(theory)
+> qqplot(carlo, theory, xlim = c(-6, 6), ylim = c(-6, 6))
+> `?`(t.test)
+> N <- 5
+> N <- 5
+> t_stat <- replicate(N, {
++ sampleA <- rnorm(N, mean = 0, sd = 1)
++ sampleB <- rnorm(N, mean = 0, sd = 1)
++ tstat <- t.test(sampleA, sampleB, var.equal = TRUE)
++ return(tstat$statistic)
++ })
+> ps = seq(1/(N + 1), 1 - 1/(N + 1), len = C)
+> theory <- qt(ps, df = 2 * N - 2)
+> qqplot(t_stat, theory)
+> N <- 5
+> t_stat <- replicate(1000, {
++ sampleA <- rnorm(N, mean = 0, sd = 1)
++ sampleB <- rnorm(N, mean = 0, sd = 1)
++ tstat <- t.test(sampleA, sampleB, var.equal = TRUE)
++ return(tstat$statistic)
++ })
+> ps = seq(1/(N + 1), 1 - 1/(N + 1), len = C)
+> theory <- qt(ps, df = 2 * N - 2)
+> qqplot(t_stat, theory)
+> N <- 30
+> t_stat <- replicate(1000, {
++ sampleA <- rnorm(N, mean = 0, sd = 1)
++ sampleB <- rnorm(N, mean = 0, sd = 1)
++ tstat <- t.test(sampleA, sampleB, var.equal = TRUE)
++ return(tstat$statistic)
++ })
+> ps = seq(1/(N + 1), 1 - 1/(N + 1), len = C)
+> theory <- qt(ps, df = 2 * N - 2)
+> qqplot(t_stat, theory)
+> N <- 100
+> t_stat <- replicate(1000, {
++ sampleA <- rnorm(N, mean = 0, sd = 1)
++ sampleB <- rnorm(N, mean = 0, sd = 1)
++ tstat <- t.test(sampleA, sampleB, var.equal = TRUE)
++ return(tstat$statistic)
++ })
+> ps = seq(1/(N + 1), 1 - 1/(N + 1), len = C)
+> theory <- qt(ps, df = 2 * N - 2)
+> qqplot(t_stat, theory)
+> N <- 250
+> t_stat <- replicate(1000, {
++ sampleA <- rnorm(N, mean = 0, sd = 1)
++ sampleB <- rnorm(N, mean = 0, sd = 1)
++ tstat <- t.test(sampleA, sampleB, var.equal = TRUE)
++ return(tstat$statistic)
++ })
+> ps = seq(1/(N + 1), 1 - 1/(N + 1), len = C)
+> theory <- qt(ps, df = 2 * N - 2)
+> qqplot(t_stat, theory)
+> N <- 5
+> t_stat <- replicate(1000, {
++ sampleA <- rnorm(N, mean = 0, sd = 1)
++ sampleB <- rnorm(N, mean = 0, sd = 1)
++ tstat <- t.test(sampleA, sampleB, var.equal = TRUE)
++ return(tstat$statistic)
++ })
+> ps = seq(1/(N + 1), 1 - 1/(N + 1), len = C)
+> theory <- qt(ps, df = 2 * N - 2)
+> qqplot(t_stat, theory)
+> N <- 5
+> t_stat <- replicate(1000, {
++ sampleA <- rnorm(N, mean = 0, sd = 1)
++ sampleB <- rnorm(N, mean = 0, sd = 1)
++ tstat <- t.test(sampleA, sampleB, var.equal = TRUE)
++ return(tstat$statistic)
++ })
+> ps = seq(1/(N + 1), 1 - 1/(N + 1), len = C)
+> theory <- qt(ps, df = 2 * N - 2)
+> qqplot(t_stat, theory)
+> `?`(rbinom)
+> txtStop
+function() {
+  removeTaskCallback('r2txt')
+  if( R2txt.vars$closecon ) {
+    close( R2txt.vars$con )
+  }
+  if( R2txt.vars$cmdfile && R2txt.vars$closecon2 ) {
+    close( R2txt.vars$con2 )
+  }
+  options( prompt=R2txt.vars$prompt,
+           continue=R2txt.vars$continue )
+  if(R2txt.vars$res) {
+      sink()
+      close(R2txt.vars$outcon)
+  }
+  evalq( rm(list=ls()), envir=R2txt.vars )
+  invisible(NULL)
+}
+<bytecode: 0x7f7c6b66ef20>
+<environment: namespace:TeachingDemos>
