@@ -7844,3 +7844,109 @@ function() {
 }
 <bytecode: 0x7f7c6b66ef20>
 <environment: namespace:TeachingDemos>
+> `?`(qt)
+> disease = factor(c(rep(0, 180), rep(1, 20), rep(0, 40), rep(1, 
++ 10)), labels = c("control", "cases"))
+> genotype = factor(c(rep("AA/Aa", 200), rep("aa", 50)), levels = c("AA/Aa", 
++ "aa"))
+> dat <- data.frame(disease, genotype)
+> dat <- dat[sample(nrow(dat)), ]
+> head(dat)
+    disease genotype
+201 control       aa
+213 control       aa
+157 control    AA/Aa
+131 control    AA/Aa
+78  control    AA/Aa
+26  control    AA/Aa
+> table(dat)
+         genotype
+disease   AA/Aa  aa
+  control   180  40
+  cases      20  10
+> table(genotype)
+genotype
+AA/Aa    aa 
+  200    50 
+> table(disease)
+disease
+control   cases 
+    220      30 
+> table(disease, genotype)
+         genotype
+disease   AA/Aa  aa
+  control   180  40
+  cases      20  10
+> tab <- table(disease, genotype)
+> (tab[2, 2]/tab[2, 1])/(tab[1, 2]/tab[1, 1])
+[1] 2.25
+> p <- mean(disease == "cases")
+> p
+[1] 0.12
+> expected <- rbind(c(1 - p, p) * sum(genotype == "AA/Aa"), c(1 - 
++ p, p) * sum(genotype == "aa"))
+> dimnames(expected) <- dimnames(tab)
+> expected
+         genotype
+disease   AA/Aa aa
+  control   176 24
+  cases      44  6
+> "# chi squared measures the difference in observed counts between factors: AA/Aa vs aa alleles. what is the probability that these differences in counts/frequencies are by chance?"
+[1] "# chi squared measures the difference in observed counts between factors: AA/Aa vs aa alleles. what is the probability that these differences in counts/frequencies are by chance?"
+> "# chi-squared generates a new table where the odds ratio = 1 (unlike above from the data where OR = 2.25) - this is to simulate the null, i.e. no difference between alleles in disease cases."
+[1] "# chi-squared generates a new table where the odds ratio = 1 (unlike above from the data where OR = 2.25) - this is to simulate the null, i.e. no difference between alleles in disease cases."
+> chisq.test(tab)$p.value
+[1] 0.08857435
+> url <- "https://studio.edx.org/c4x/HarvardX/PH525.1x/asset/assoctest.csv"
+> filename <- basename(url)
+> download(url, destfile = filename)
+> d <- read.csv("assoctest.csv")
+> head(d)
+  allele case
+1      0    1
+2      0    0
+3      1    1
+4      1    1
+5      1    1
+6      0    0
+> table(d$allele, d$case)
+   
+     0  1
+  0 17 17
+  1 10 28
+> tab <- table(d$allele, d$case)
+> chisq.test(tab)$p.value
+[1] 0.06746466
+> fisher.test(tab)
+
+	Fisher's Exact Test for Count Data
+
+data:  tab
+p-value = 0.05194
+alternative hypothesis: true odds ratio is not equal to 1
+95 percent confidence interval:
+ 0.940442 8.493001
+sample estimates:
+odds ratio 
+  2.758532 
+
+> txtStop
+function() {
+  removeTaskCallback('r2txt')
+  if( R2txt.vars$closecon ) {
+    close( R2txt.vars$con )
+  }
+  if( R2txt.vars$cmdfile && R2txt.vars$closecon2 ) {
+    close( R2txt.vars$con2 )
+  }
+  options( prompt=R2txt.vars$prompt,
+           continue=R2txt.vars$continue )
+  if(R2txt.vars$res) {
+      sink()
+      close(R2txt.vars$outcon)
+  }
+  evalq( rm(list=ls()), envir=R2txt.vars )
+  invisible(NULL)
+}
+<bytecode: 0x7faff5bbdde8>
+<environment: namespace:TeachingDemos>
