@@ -102,3 +102,69 @@ theory <- qt(ps, df = 2*N-2) # t.test var.equal = TRUE already has this df param
 qqplot(t_stat, theory)
 # repeated with range of sample sizes N = 5 - 100; larger sample sizes produces more normally distributed (linear) data
 # smaller sample sizes had larger quantiles
+
+# * Permutation tests - when we do not have useful approximation provided by CLT (monte carlo simulations), nor access to all population values
+dat <- read.csv("femaleMiceWeights.csv")
+control <- filter(dat, Diet == "chow") %>%
+  select(Bodyweight) %>%
+  unlist()
+treatment <- filter(dat, Diet == "hf") %>%
+  select(Bodyweight) %>%
+  unlist()
+obsdiff <- abs(mean(control) - mean(treatment))
+N <- 12
+avgdiff <- replicate(1000, { # shuffle control and treatment values to generate distribution that approximates the null
+  all <- sample(c(control, treatment)) # generate sample, selecting values from both variables (selected at random bc no specified sample size, hence 'shuffled')
+  newcontrols <- all[1:N] # select the first 12 vectors from 'all'
+  newtreatments <- all[(N+1):(2*N)] # select 12+1 (13th) to the 24th value from 'all'
+  return(mean(newtreatments) - (mean(newcontrols)))
+})
+hist(avgdiff)
+abline
+# calculate proportion of permutation values (shuffled data) > obsdiff (true data, with defined control vs treatment groups)
+(sum(abs(avgdiff) > abs(obsdiff)) + 1) / (length(avgdiff) + 1) # ** must add 1 to numerator + denominator to account for p-value misestimation
+# control and treatment variables were generated with whole population dataset. repeat with smaller sample size:
+N <- 5
+controlsample <- sample(control, N)
+treatmentsample <- sample(treatment, N)
+obsdiffsample <- abs(mean(controlsample) - mean(treatmentsample))
+# repeat permutation shuffling with sampled data:
+avgdiffsample <- replicate(1000, { # shuffle control and treatment values to generate distribution that approximates the null
+  all <- sample(c(controlsample, treatmentsample)) # generate sample, selecting values from both variables (selected at random bc no specified sample size, hence 'shuffled')
+  newcontrols <- all[1:N] # select the first 12 vectors from 'all'
+  newtreatments <- all[(N+1):(2*N)] # select 12+1 (13th) to the 24th value from 'all'
+  return(mean(newtreatments) - (mean(newcontrols)))
+})
+hist(avgdiffsample)
+abline(v = obsdiff, col = "red", lwd = 2) # plot vertical line showing true obsdiff from population data with defined variables (control and treatment) for comparison
+# rough bell curve: bar tall at abline obsdiff, indicating large proportion of data at similar obsdiff value. therefore, not significant
+# note: permutation-generated null distributions do not guarantee a true null distribution. permutations have larger tails than actual null distribution, hence produces conservative p-values
+
+babies <- read.table("babies.txt", header = TRUE)
+head(babies)
+bwt.nonsmoke <- filter(babies, smoke == "0") %>%
+  select(bwt) %>%
+  unlist()
+bwt.smoke <- filter(babies, smoke == "1") %>%
+  select(bwt) %>%
+  unlist()
+N <- 10
+set.seed(1)
+nonsmokers <- sample(bwt.nonsmoke, N)
+smokers <- sample(bwt.smoke, N)
+obs <- abs(mean(nonsmokers) - mean(smokers))
+# if cannot assume assumptions hold to perform t-distribution or normal distributions, use permutations: shuffle data to approximate the null, i.e. any significant differences would be purely by chance
+set.seed(1)
+obsshuffle <- replicate(1000, {
+  shuffle <- sample(c(smokers, nonsmokers))
+  sample(dat) # randomly shuffle smokers and nonsmokers data
+  smokersstar <- shuffle[1:N]
+  nonsmokersstar <- shuffle[(N+1):(2*N)]
+  return(mean(smokersstar)-mean(nonsmokersstar))
+})
+hist(obsshuffle)
+mean(abs(obsshuffle) > obs) # calculate p-value: what proportion of values are larger than the true obs difference (from population data)?
+# = 0.09: conservative p-value. i.e. differences likely to be due to chance
+
+# * Repeat the above exercise, but instead of the differences in mean, consider the differences in median obs <- median(smokers) - median(nonsmokers). What is the permutation based p-value?
+# ans: using median excludes much of the sampling noise, hence fails to identify potential significant differences
