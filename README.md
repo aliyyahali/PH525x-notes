@@ -8,6 +8,7 @@ Ch1:
 - understanding the theory behind statistics: CLT, Monte Carlo, t-distributions, confidence intervals, power
 - using parametric simulations to generate population data
 - modelling the null distribution to investigate differences between observed vs expected data (permutation tests, association tests)
+
 Ch2:
 - when and how to use histogram, qq-plot, boxplot, scatterplot for exploratory data analyses
 - univariate analysis vs 2D analysis
