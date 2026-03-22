@@ -1,7 +1,7 @@
 # PH525x-notes
 This repository contains .R scripts and .txt R console transcripts to record my progress through the PH525x genomics class (Rafael Irizarry, Michael Love, Harvard) code worksheets.
 
-Status: Chapter 4 (Matrix Algebra) complete
+Status: Chapter 5: Linear Models
 
 Key learning progress:
 
