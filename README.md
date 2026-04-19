@@ -1,9 +1,16 @@
 # PH525x-notes
 This repository contains .R scripts and .txt R console transcripts to record my progress through the PH525x genomics class (Rafael Irizarry, Michael Love, Harvard) code worksheets.
 
-Status: Chapter 5: Linear Models
+Status: Chapter 5: Linear Models, interactions and contrasts
+[Spider friction coefficient analysis](https://aliyyahali.github.io/PH525x-notes/Linear_Models_R-scripts/interactions_contrasts_spider_EDA.html)
 
 Key learning progress:
+
+Ch5:
+- computing standard error via linear modelling
+- manual variance-covariance estimate
+- constructing model matrices: mapping spider leg pair friction dataset into binary notation
+- interpreting spider friction coefficients vs reference (interactions and contrasts)
 
 Ch4:
 - understanding matrix notation and operations
