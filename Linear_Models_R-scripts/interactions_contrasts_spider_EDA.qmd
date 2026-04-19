@@ -1,6 +1,8 @@
 ---
 title: "Modelling interactions and contrasts"
-format: html
+format:
+  html:
+    embed-resources: true
 editor: visual
 ---
 
