@@ -27,6 +27,8 @@ Data describes frictional coefficient for pulling / pushing, for each spider leg
 head(spider)
 ```
 
+# Experiment overview
+
 Spiders have 4 leg pairs. Each leg pair is labelled L1 - L4. *Cupiennius. salei* spider tarsas and claw tuft were collected, air dried, then performed pulling / pushing simulations. Friction on each leg pair samples were measured via force transducer.
 
 Friction coefficients were recorded for each leg pair during pulling, and pushing movement.
