@@ -176,7 +176,7 @@ type \< 0.05, significant p-value (also based on F-value): i.e. there is a signi
 
 i.e. spiders have significantly higher friction for pulling movement vs pushing movement.
 
-## Practice questions
+## Interactions: Practice questions
 
 Suppose we have an experiment with two species A and B, and two conditions, control and treated.
 
@@ -208,4 +208,65 @@ library(contrast)
 contrast(S, list(leg = "L4", type = "pull"), list(leg = "L2", type = "pull"))
 # contrast = 0.1094167
 # t-statistics = 2.45
+```
+
+The t-statistic for the contrast of leg pair L4 vs. leg pair L2 is constructed by taking the difference of the estimated coefficients legL4 and legL2, and then dividing by the standard error of the difference.
+
+Recap:
+
+Calculate betahat via observed values (Y) and matrix (X) (data values).
+
+Predict Y observed outcomes (Yhat) by fitting betahat: Y = XBeta (+ error) –\> generate a regression line.
+
+Covariance measures the shared error between two variables (of the same dataset here), i.e. if they are subject to the same error, it would not independently affect the difference,
+
+Hence why var(betahatL4 - betahatL2) = var(betahatL4) + var(betahatL2) - 2cov(betahatL4, betahatL2)
+
+```{r}
+X <- model.matrix(~ type + leg, data = spider)
+```
+
+Suppose that we notice that the within-group variances for the groups with *smaller frictional coefficients are generally smaller*, and so we try to apply a transformation to the frictional coefficients to make the within-group variances more constant.
+
+```{r}
+spider$log2friction <- log2(spider$friction) # add log2friction column to spider dataset
+boxplot(log2friction ~ type*leg, data = spider)
+
+# Run a linear model of log2friction with type, leg and interactions between type and leg:
+log2 <- lm(log2friction ~ type*leg, data = spider)
+
+# What is the t-statistic for the interaction of type push and leg L4? If this t-statistic is sufficiently large, we would reject the null hypothesis that the push vs. pull effect on log2(friction) is the same in L4 as in L1.
+summary(log2)
+# t-statistic = -3.689 (SE away from mean)
+
+# very large t value -12.901 for typepush (L1), i.e. suggesting a significant difference in push vs pull (L1)
+
+# likewise, L4 also has significant push vs pull difference (-3.689). However, not same as L1 difference push vs pull, hence reject null.
+
+```
+
+Using the same analysis of log2 transformed data, What is the F-value for all of the `type:leg` interaction terms in an ANOVA? If this value is sufficiently large, we would reject the null hypothesis that the push vs. pull effect on `log2(friction)` is the same for all leg pairs.
+
+```{r}
+aov <- anova(log2) # includes interaction variables type*leg
+summary(aov)
+aov
+# anova tests: does adding these interaction variables *actually reduce variance? (How likely is it that this reduction in variance is due to chance?)
+
+# F-statistic = 10.701 for type:leg (i.e. 10x stronger variance than the noise, unlikely variance is due to chance)
+
+```
+
+What is the L2 vs L1 estimate in log2(friction) for the pull samples?
+
+```{r}
+contrast(log2, list(leg = "L2", type = "pull"), list(leg = "L1", type = "pull"))
+# t value = 2.9 (>2), p value = 0.004; significant differnece in L1 vs L2 pull friction coefficients
+# *this could also be seen simply from summary(log2): legL2 = 0.34861
+```
+
+What is the L2 vs. L1 estimate in `log2(friction)` for the push samples? Remember, because of the interaction terms, this is not the same as the L2 vs L1 difference for the pull samples. If you’re not sure use the `contrast` function. Another hint: consider the arrows plot for the model with interactions.
+
+```{r}
+contrast(log2, list(leg = "L2", type = "push"), list(leg = "L1", type = "push"))
 ```
