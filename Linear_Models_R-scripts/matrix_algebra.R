@@ -184,3 +184,14 @@ Yb # 13, 13
 ## ** What is the fitted value for the C samples? **
 Yc = Xc%*%beta
 Yc # = 7, 7
+
+## ---------------------------------------------
+
+# solve(crossprod(X)) is unstable to predict betahat coefficients. 
+# because matrix data may be collinear, or not 'full rank' (independent columns):
+# e.g. initially conducting experiment investigating treatment A-D on mice.
+# but later wanted to investigate sex effect, i.e. female treated with A and B, male treated with C and D
+
+# in matrix format, this means the sex columns (1 = male) is the same as treatment columns C and D
+# this means the matrix in R does not distinguish the difference between the two independent variables (sex and treatment) because it has been confounded.
+# therefore, solve.qr() rearranges matrix to establish full rank (find independent columns), using orthagonal and upper triangle matrices, then backsolve() --> QR decomposition
