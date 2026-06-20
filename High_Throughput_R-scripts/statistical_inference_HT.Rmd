@@ -1,0 +1,181 @@
+---
+title: "statistical_inference_HT.Rmd"
+output: html_notebook
+---
+
+```{r}
+libr
+library(devtools)
+install_github("genomicsclass/GSE5859Subset")
+library(GSE5859Subset)
+data(GSE5859Subset) #geneAnnotation, geneExpression, sampleInfo
+head(geneExpression) #units = features
+dim(geneExpression)
+
+```
+
+dim(geneExpression) = 8793 genes, 24 experimental units (samples)
+The samples include 2 groups of 12; identify which samples belong to which group:
+```{r}
+head(sampleInfo)
+levels(sampleInfo$ethnicity)
+
+sampleInfo$group # 1 0
+group_by(sampleInfo)
+
+rownames(geneExpression) #manufacturer ID codes (genes in col) for each individual data (GSM). values represent amount of RNA present for that particular gene in that individual/sample.
+colnames(geneAnnotation) #includes: chromosome no., chr location, symbol for gene name
+```
+
+
+Familiarising with dataset - extract log RNA value for ARPC1A:
+
+```{r}
+## sampleInfo contains GSM filename. geneAnnotation contains probeID. geneExpression includes log RNA value, categorised by probeID and GSM filename.
+
+
+sample <- filter(sampleInfo, date == "2005-06-10") %>%
+  pull("filename")
+
+geneA <- filter(geneAnnotation, SYMBOL == "ARPC1A") %>%
+  pull("PROBEID")
+
+## identified probeID and filename that satisfied above date and SYMBOL criteria
+## extract RNA log value with above^
+geneExpression[geneA, sample]
+
+```
+
+
+
+Pick gene #25 from geneExpression --> lists all individuals (GSMs) i.e. samples for gene #25
+Filter sampleInfo$group (1 = cases, 0 = control).
+```{r}
+g <- sampleInfo$group
+e <- geneExpression[25,]
+```
+
+Compare gene #25 geneExpression (measured by amount of RNA) against the control and treatment(?) groups (1,0):
+Is there a significant difference in geneExpression in gene #25 in cases vs control? - perform t.test.
+First, confirm normal distribution?:
+```{r}
+
+## colnames geneExpression (GSM) is idential to colname sampleInfo 'filename'
+identical(colnames(geneExpression), sampleInfo$filename)
+## hence GSM colnames in chronological order with group (1,0)
+
+# plot gene#25 (geneExpression[25,]) against sampleInfo$group
+library(rafalib)
+mypar(1,2)
+qqnorm(e[g == 1])
+qqline(e[g == 1])
+qqnorm(e[g==0])
+qqline(e[g==0])
+
+```
+Can assume normal distribution
+
+```{r}
+## there are multiple data entries of gene#25 in group 1 and group 0.
+## perform t.test to compare log RNA between each group
+## - is there a significant difference in log RNA gene expression for gene#25 in group 1 vs group 0?
+
+t.test(e[g==1], e[g==0])
+```
+This particular gene#25, pvalue > 0.05, hence not significant.
+In high-throughput data analysis, this concept is applied to all genes (multiple testing).
+
+(Bioconducter can also perform the above more efficiently):
+```{r}
+library(genefilter)
+```
+
+However, this is not sustainable. P-values are random variables, and hence will likely produce false positives (even when the null hypothesis is guaranteed true) --> introduce *procedures*, 'power' etc. to limit errors.
+
+In procedures, we define parameters for what we could call 'significant'.
+Family wise error rates (FWER) determines overall how many results are false negative / false positive.
+
+Aim of procedure is to minimise the FWER: making the probability of making 1< mistakes small.
+Submitting alpha = 0.05 would always return 5% of gene data as false positive  - but 5% of 1000 gene data is still too large.
+
+Therefore FWER determines error rate as probability of making *one* false positive across the entire dataset. Therefore, the smaller the FWER, the better. 
+If FWER = 0.05, this means 5% probability of producing false positive *once* in the entire dataset, and vice versa, 95% confidence that the remainder contains *zero* false positives. This is much more sustainable / conservative.
+
+------------------------------------------
+
+Multiple testing
+
+Bonferroni correction: controlling the FWER, continues logic above^
+To achieve total FWER of 0.05: divide FWER/m, where m = total tests.
+Conservative - can lead to very high false negative rate.
+i.e. if dataset = 1000, desired FWER of 0.05 = 0.00005. This means pvalue < 0.00005 to be classed significant.
+
+Sidak's procedure: minimising alpha (threshold for p-value) based on size of dataset, assuming data are *independent* (although not applicable to gene investigation, if investigating an interdependent effect)
+
+
+
+The above procedures punish any single false positive. In genomics, where genes are not independent, tolerating a small percentage in false positives is sustainable.
+
+False discovery rate (FDR) = false positive (discoveries) / total significant discoveries
+Benjamini-Hochberg (BH) procedure: controls FDR by ranking p-values (lowest-highest), define threshold (alpha), all p-values until that cut-off are declared significant.
+If the data had nothing of significance (pure noise), then all p-values would get 'equally spaced' p-values, i.e. just as likely to get p-value 0.4 as with p-value 0.9 etc...
+If the data was of significance, then p-values may cluster (spike) on one end, i.e. p-value 0.03 more likely than 0.08 etc.
+Therefore, BH procedure loosens the cut-off threshold for each ranked p-value (unlike Bonferonni with strict cut off at alpha (0.05)). This means BH is more lenient to catch the cluster of similar p-values.
+
+------------------------------------------
+
+Q-values
+
+q-values reflect the FDR. If FDR = FP / (FP + TP), then FDR = proportion of false positives.
+
+If the dataset had nothing of significance (pure noise), then:
+1% of p-values are < 0.01;
+2% of p-values are < 0.02;
+5% of p-values are < 0.05;
+95% of p-values are < 0.95 etc.
+because pure noise would have equally distributed p-values. Each p-value is equally as likely to occur as any other (hence 'equally spaced' / uniform).
+
+This means we can predict the *expected* false positive rate (noise classed as false positive).
+Say in a dataset of 1000 genes, rank 40 gene has p-value = 0.002.
+(Referencing the above p-values for pure noise): if the dataset had nothing of significance (pure noise), then a p-value of 0.002 would mean we *expected* 0.2% of data to be positive.
+0.002 * 1000 = 2 genes expected to be positive.
+However, because FDR ranks p-values, all ranks above gene rank 40 are also p value < 0.002. This means that 40 p-values (genes) were positive (significant < 0.002). Therefore, there may be some false positives.
+FDR = (expected) FP / (FP + TP) = 2 / 40 =  0.05 (5%) = q-value.
+
+p-value examines probability of false positive on an independent basis.
+q-value examines probability of false positive on the said rank based on all ranks above (group), using expected FP.
+
+------------------------------------------
+
+Practice questions
+
+1. Assume the null is true and denote the p-value you would get if you ran a test as P. Define the function f(x)=Pr(P>x). What does f(x) look like?
+Pr(P>x) = f(x) = the probability that p-value > x. If the null is true, then the data should be pure noise. Referring to list of p-value significance, then f(x) = x.
+For example, Pr(P > 0.05) = f(0.05), i.e. 5% of p-values are < 0.05
+This forms the identity line: y=x (f(x) = x)
+
+2. We previously learned that under the null, the probability of a p-value < p is p. If we run 8,793 independent tests, what it the probability of *incorrectly rejecting* at least one of the null hypothesis?
+FWER = one false positive error across entire dataset of 8793 (n).
+at alpha 0.05, FWER = (1-a)^n
+= 0.95^8793
+= ~0 (probability of 0 errors across entire dataset of 8793)
+Therefore 1 - (~0) = 1
+i.e. 100% chance of false negative
+
+--> Too strict to allow one error across 8793 tests.
+Must allow lenience, e.g. Benjamini-Hochberg procedure (adjusted alpha threshold)
+
+3. Suppose we need to run 8,793 statistical tests and we want to make the probability of a mistake very small, say 5%. Use the answer to Exercise 2 to determine how small we have to change the cutoff, previously 0.05, to lower our probability of at least one mistake to be 5%.
+*Less conservative*: 5% of results as false negative tolerated
+0.05 / 8793 = 0.0000057 p-value
+
+
+
+We have learned about the family wide error rate FWER. This is the probability of incorrectly rejecting the null at least once. Using the notation in the video, this probability is written like this: Pr(V>0)
+.
+
+What we want to do in practice is choose a procedure that guarantees this probability is smaller than a predetermined value such as 0.05. Here we keep it general and, instead of 0.05, we use α
+.
+
+We have already learned that the procedure “pick all the genes with p-value <0.05” fails miserably as we have seen that Pr(V>0)≈1
+. So what else can we do?
